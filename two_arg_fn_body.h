@@ -1,6 +1,6 @@
 
 #define two_arg_fn_body(name, stride, itype, ivec, otype, ovec)         \
-  void DN_##name(const long n,                                          \
+  void BMAS_##name(const long n,                                          \
                  itype *x, const long incx,                             \
                  itype *y, const long incy,                             \
                  otype *out, const long inc_out){                       \
