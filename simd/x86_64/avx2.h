@@ -90,8 +90,12 @@ BMAS_dbool static inline BMAS_vector_dge(BMAS_dvec a, BMAS_dvec b){
 
 // trigonometric
 
-BMAS_svec static inline BMAS_vector_ssin(BMAS_svec x){ return Sleef_sinf8_u10avx2(x);}
-BMAS_svec static inline BMAS_vector_scos(BMAS_svec x){ return Sleef_cosf8_u10avx2(x);}
+/* BMAS_svec static inline BMAS_vector_ssin(BMAS_svec x){ return Sleef_sinf8_u10avx2(x);} */
+__m256 _ZGVdN8v_sinf(__m256 x);
+BMAS_svec static inline BMAS_vector_ssin(BMAS_svec x){ return _ZGVdN8v_sinf(x);}
+/* BMAS_svec static inline BMAS_vector_scos(BMAS_svec x){ return Sleef_cosf8_u10avx2(x);} */
+__m256 _ZGVdN8v_cosf(__m256 x);
+BMAS_svec static inline BMAS_vector_scos(BMAS_svec x){ return _ZGVdN8v_cosf(x);}
 BMAS_svec static inline BMAS_vector_stan(BMAS_svec x){ return Sleef_tanf8_u10avx2(x);}
 
 BMAS_svec static inline BMAS_vector_sasin(BMAS_svec x){ return Sleef_asinf8_u10avx2(x);}

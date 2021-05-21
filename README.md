@@ -16,7 +16,9 @@ See the [bmas.h](./bmas.h) for the list of currently provided functions.
 
 ## Implementation details
 
-The actual computation is done by simd functions from hardware simd instructions, [SLEEF](https://sleef.org/) and/or gcc. These are defined inside the [config](./config/) directory. 
+The actual computation is done by simd functions from hardware simd instructions, [SLEEF](https://sleef.org/) and/or libmvec*. These are defined inside the [config](./config/) directory. 
+
+*Currently, [libmvec](https://github.com/sgallagher/glibc/blob/master/sysdeps/unix/sysv/linux/x86_64/libmvec.abilist) is used for single-float sine and cosine for AVX2, since they were found to be faster than their SLEEF counterparts.
 
 ## Disclaimer
 
