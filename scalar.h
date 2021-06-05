@@ -12,6 +12,9 @@ double static inline BMAS_scalar_dmul(double a, double b){return a*b;}
 double static inline BMAS_scalar_ddiv(double a, double b){return a/b;}
 
 
+int32_t static inline BMAS_scalar_i32add(int32_t a, int32_t b){return a+b;}
+
+
 _Bool static inline BMAS_scalar_slt(float a, float b){return a<b;}
 _Bool static inline BMAS_scalar_sle(float a, float b){return a<=b;}
 _Bool static inline BMAS_scalar_seq(float a, float b){return a==b;}

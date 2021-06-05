@@ -20,7 +20,7 @@
     }else if(incy == 1 && inc_out == 1){                                \
       _Bool *simd_end = out + (n/stride)*stride;                        \
       while(out != simd_end){                                           \
-        va = vec##_make(x, incx);                                       \
+        va = vec##_make(x, incx, sizeof(type));                         \
         vb = vec##_load(y);                                             \
         vc = BMAS_vector_##name(va, vb);                                \
         vec##_store_bool(vc, out, 1);                                   \
@@ -32,7 +32,7 @@
       _Bool *simd_end = out + (n/stride)*stride;                        \
       while(out != simd_end){                                           \
         va = vec##_load(x);                                             \
-        vb = vec##_make(y, incy);                                       \
+        vb = vec##_make(y, incy, sizeof(type));                         \
         vc = BMAS_vector_##name(va, vb);                                \
         vec##_store_bool(vc, out, 1);                                   \
         x += stride;                                                    \
@@ -53,8 +53,8 @@
     }else if(inc_out == 1){                                             \
       _Bool *simd_end = out + (n/stride)*stride;                        \
       while(out != simd_end){                                           \
-        va = vec##_make(x, incx);                                       \
-        vb = vec##_make(y, incy);                                       \
+        va = vec##_make(x, incx, sizeof(type));                         \
+        vb = vec##_make(y, incy, sizeof(type));                         \
         vc = BMAS_vector_##name(va, vb);                                \
         vec##_store_bool(vc, out, 1);                                   \
         x += stride*incx;                                               \
@@ -64,7 +64,7 @@
     }else if(incy == 1){                                                \
       type *simd_end = y + (n/stride)*stride;                           \
       while(y != simd_end){                                             \
-        va = vec##_make(x, incx);                                       \
+        va = vec##_make(x, incx, sizeof(type));                         \
         vb = vec##_load(y);                                             \
         vc = BMAS_vector_##name(va, vb);                                \
         vec##_store_bool(vc, out, inc_out);                             \
@@ -76,7 +76,7 @@
       type *simd_end = x + (n/stride)*stride;                           \
       while(x != simd_end){                                             \
         va = vec##_load(x);                                             \
-        vb = vec##_make(y, incy);                                       \
+        vb = vec##_make(y, incy, sizeof(type));                         \
         vc = BMAS_vector_##name(va, vb);                                \
         vec##_store_bool(vc, out, inc_out);                             \
         x += stride;                                                    \
@@ -87,8 +87,8 @@
       long i=0;                                                         \
       const long simd_end = (n/stride)*stride;                          \
       while(i != simd_end){                                             \
-        va = vec##_make(x, incx);                                       \
-        vb = vec##_make(y, incy);                                       \
+        va = vec##_make(x, incx, sizeof(type));                         \
+        vb = vec##_make(y, incy, sizeof(type));                         \
         vc = BMAS_vector_##name(va, vb);                                \
         vec##_store_bool(vc, out, inc_out);                             \
         i += stride;                                                    \

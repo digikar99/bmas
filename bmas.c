@@ -9,32 +9,57 @@
   #include "simd/aarch64.h"
 #endif
 
-BMAS_svech static inline BMAS_svech_make(float* ptr, const long stride){
+BMAS_svech static inline BMAS_svech_make(
+  float* ptr, const long stride, const int elt_size){
   BMAS_svech v;
   for(int i=0; i<SIMD_DOUBLE_STRIDE; i++) v[i] = ptr[i*stride];
   return v;
 }
-BMAS_svec static inline BMAS_svec_make(float* ptr, const long stride){
+BMAS_svec static inline BMAS_svec_make(
+  float* ptr, const long stride, const int elt_size){
   BMAS_svec v;
   for(int i=0; i<SIMD_SINGLE_STRIDE; i++) v[i] = ptr[i*stride];
   return v;
 }
-void static inline BMAS_svec_store_multi(BMAS_svec v, float* ptr, const long stride){
+void static inline BMAS_svec_store_multi(
+  BMAS_svec v, float* ptr, const long stride, const int elt_size){
   // TODO: Optimize this
   for(int i=0; i<SIMD_SINGLE_STRIDE; i++) (ptr+i*stride)[0] = v[i];
 }
-void static inline BMAS_svech_store_multi(BMAS_svech v, float* ptr, const long stride){
+void static inline BMAS_svech_store_multi(
+  BMAS_svech v, float* ptr, const long stride, const int elt_size){
   // TODO: Optimize this
   for(int i=0; i<SIMD_DOUBLE_STRIDE; i++) (ptr+i*stride)[0] = v[i];
 }
 
-BMAS_dvec static inline BMAS_dvec_make(double* ptr, const long stride){
+BMAS_dvec static inline BMAS_dvec_make(
+  double* ptr, const long stride, const int elt_size){
   BMAS_dvec v;
   for(int i=0; i<SIMD_DOUBLE_STRIDE; i++) v[i] = ptr[i*stride];
   return v;
 }
-void static inline BMAS_dvec_store_multi(BMAS_dvec v, double* ptr, const long stride){
+void static inline BMAS_dvec_store_multi(
+  BMAS_dvec v, double* ptr, const long stride, const int elt_size){
   for(int i=0; i<SIMD_DOUBLE_STRIDE; i++) (ptr+i*stride)[0] = v[i];
+}
+
+
+BMAS_ivec static inline BMAS_ivec_make(
+  void* ptr, const long stride, const int elt_size){
+  char* cptr = (char*) ptr;
+  const long cstride = stride*elt_size;
+  BMAS_ivec v;
+  const int nelt = SIMD_SINGLE_STRIDE*4/elt_size;
+  for(int i=0; i<nelt; i++) v[i] = cptr[i*cstride];
+  return v;
+}
+
+void static inline BMAS_ivec_store_multi(
+  BMAS_ivec v, void* ptr, const long stride, const int elt_size){
+  char* cptr = (char*) ptr;
+  const long cstride = stride*elt_size;
+  const int nelt = SIMD_SINGLE_STRIDE*4/elt_size;
+  for(int i=0; i<nelt; i++) cptr[i*cstride] = v[i];
 }
 
 
@@ -100,7 +125,6 @@ one_arg_fn_body(dexp2,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, double, BMAS_dvec
 one_arg_fn_body(dexpm1, SIMD_DOUBLE_STRIDE, double, BMAS_dvec, double, BMAS_dvec);
 
 
-
 // We aren't adding rint because it has no common-lisp equivalent
 // - none I know of
 
@@ -147,6 +171,9 @@ two_arg_fn_body_comparison(dneq, SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbo
 two_arg_fn_body_comparison(dge,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
 two_arg_fn_body_comparison(dgt,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
 
+
+// Integer Arithmetic
+two_arg_fn_body(i32add, SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, int32_t, BMAS_ivec);
 
 /* // two_arg_fn_body(copysign); */
 /* // two_arg_fn_body(fmax); */

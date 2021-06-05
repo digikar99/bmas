@@ -4,6 +4,8 @@ typedef __m256 BMAS_svec;
 typedef __m256d BMAS_dvec;
 typedef __m256 BMAS_sbool;
 typedef __m256d BMAS_dbool;
+typedef __m256i BMAS_ivec;
+typedef __m128i BMAS_ivech;
 
 #define SIMD_SINGLE_STRIDE 8
 #define SIMD_DOUBLE_STRIDE 4
@@ -26,12 +28,15 @@ void static inline BMAS_dvec_store_bool(BMAS_dbool v, _Bool* ptr, const long str
 BMAS_svech static inline BMAS_svech_load(float* ptr){ return _mm_loadu_ps(ptr);}
 void static inline BMAS_svech_store(float* ptr, BMAS_svech v){ return _mm_storeu_ps(ptr, v);}
 
+BMAS_ivec static inline BMAS_ivec_load(void* ptr){ return _mm256_loadu_si256((__m256i *)ptr);}
+void static inline BMAS_ivec_store(void* ptr, BMAS_ivec v){_mm256_storeu_si256((__m256i *)ptr, v);}
+
 // conversion
 
 BMAS_dvec static inline BMAS_svech_to_dvec(BMAS_svech a){return _mm256_cvtps_pd(a);}
 BMAS_svech static inline BMAS_dvec_to_svech(BMAS_dvec a){return _mm256_cvtpd_ps(a);}
 
-// basic arithmetic
+// basic float arithmetic
 
 BMAS_svec static inline BMAS_vector_sadd(BMAS_svec a, BMAS_svec b){return _mm256_add_ps(a, b);}
 BMAS_svec static inline BMAS_vector_ssub(BMAS_svec a, BMAS_svec b){return _mm256_sub_ps(a, b);}
@@ -43,8 +48,11 @@ BMAS_dvec static inline BMAS_vector_dsub(BMAS_dvec a, BMAS_dvec b){return _mm256
 BMAS_dvec static inline BMAS_vector_dmul(BMAS_dvec a, BMAS_dvec b){return _mm256_mul_pd(a, b);}
 BMAS_dvec static inline BMAS_vector_ddiv(BMAS_dvec a, BMAS_dvec b){return _mm256_div_pd(a, b);}
 
+// integer arithmetic
+BMAS_ivec static inline BMAS_vector_i32add(BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi32(a, b);}
 
-// comparison
+
+// float comparison
 
 // A quick test on numpy will suggest that numpy uses the "ordered" "non-signalling"
 // comparisons

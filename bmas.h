@@ -1,3 +1,4 @@
+#include <stdint.h>
 
 #define one_arg_fn(name)                                \
   void BMAS_s##name##(const long n,                     \
@@ -90,6 +91,15 @@ two_arg_fn(deq, double, _Bool);
 two_arg_fn(dneq, double, _Bool);
 two_arg_fn(dgt, double, _Bool);
 two_arg_fn(dge, double, _Bool);
+
+two_arg_fn(i64add, int64_t, int64_t);
+two_arg_fn(i32add, int32_t, int32_t);
+two_arg_fn(i16add, int16_t, int16_t);
+two_arg_fn(i8add,  int8_t, int8_t);
+two_arg_fn(u64add, uint64_t, uint64_t);
+two_arg_fn(u32add, uint32_t, uint32_t);
+two_arg_fn(u16add, uint16_t, uint16_t);
+two_arg_fn(u8add,  uint8_t,  uint8_t);
 
 
 one_arg_fn(cbrt);
