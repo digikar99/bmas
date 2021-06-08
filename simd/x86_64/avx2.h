@@ -49,8 +49,10 @@ BMAS_dvec static inline BMAS_vector_dmul(BMAS_dvec a, BMAS_dvec b){return _mm256
 BMAS_dvec static inline BMAS_vector_ddiv(BMAS_dvec a, BMAS_dvec b){return _mm256_div_pd(a, b);}
 
 // integer arithmetic
+BMAS_ivec static inline BMAS_vector_i64add(BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi64(a, b);}
 BMAS_ivec static inline BMAS_vector_i32add(BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi32(a, b);}
-
+BMAS_ivec static inline BMAS_vector_i16add(BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi16(a, b);}
+BMAS_ivec static inline BMAS_vector_i8add(BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi8(a, b);}
 
 // float comparison
 

@@ -1,27 +1,27 @@
 #include <stdint.h>
 
 #define one_arg_fn(name)                                \
-  void BMAS_s##name##(const long n,                     \
-                      float* x, const long incx,        \
-                      float* out, const long inc_out);  \
-  void BMAS_d##name##(const long n,                     \
-                      double* x, const long incx,       \
-                      double* out, const long inc_out);
+  void BMAS_s##name(const long n,                       \
+                    float* x, const long incx,          \
+                    float* out, const long inc_out);    \
+  void BMAS_d##name(const long n,                       \
+                    double* x, const long incx,         \
+                    double* out, const long inc_out);
 
-#define one_arg_fn_int(name)                            \
-  void BMAS_s##name##(const long n,                     \
-                      float* x, const long incx,        \
-                      long* out, const long inc_out);   \
-  void BMAS_d##name##(const long n,                     \
-                      double* x, const long incx,       \
-                      long* out, const long inc_out);
+#define one_arg_fn_int(name)                        \
+  void BMAS_s##name(const long n,                   \
+                    float* x, const long incx,      \
+                    long* out, const long inc_out); \
+  void BMAS_d##name(const long n,                   \
+                    double* x, const long incx,     \
+                    long* out, const long inc_out);
 
 
-#define two_arg_fn(name, itype, otype)                  \
-  void BMAS_##name##(const long n,                      \
-                     itype* x, const long incx,         \
-                     itype* y, const long incy,         \
-                     otype* out, const long inc_out);   \
+#define two_arg_fn(name, itype, otype)              \
+  void BMAS_##name(const long n,                    \
+                   itype* x, const long incx,       \
+                   itype* y, const long incy,       \
+                   otype* out, const long inc_out); \
 
 /* Example expansion of one_arg_fn(sin):
  * void BMAS_ssin(const long n,
@@ -32,12 +32,12 @@
  *               double* out, const long inc_out);
  */
 
-BMAS_cast_sd(const long n,
-             float* x, const long incx,
-             double* y, const long incy);
-BMAS_cast_ds(const long n,
-             double* x, const long incx,
-             float* y, const long incy);
+void BMAS_cast_sd(const long n,
+                  float* x, const long incx,
+                  double* y, const long incy);
+void BMAS_cast_ds(const long n,
+                  double* x, const long incx,
+                  float* y, const long incy);
 
 one_arg_fn(sin);
 one_arg_fn(cos);
@@ -96,10 +96,8 @@ two_arg_fn(i64add, int64_t, int64_t);
 two_arg_fn(i32add, int32_t, int32_t);
 two_arg_fn(i16add, int16_t, int16_t);
 two_arg_fn(i8add,  int8_t, int8_t);
-two_arg_fn(u64add, uint64_t, uint64_t);
-two_arg_fn(u32add, uint32_t, uint32_t);
-two_arg_fn(u16add, uint16_t, uint16_t);
-two_arg_fn(u8add,  uint8_t,  uint8_t);
+
+two_arg_fn(foobar, float, float);
 
 
 one_arg_fn(cbrt);
