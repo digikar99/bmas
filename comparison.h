@@ -1,11 +1,12 @@
 
-#define two_arg_fn_body_comparison(name, stride, type, vec, bool_vec)   \
+#define two_arg_fn_body_comparison(name, _stride, type, vec, bool_vec)  \
   void BMAS_##name(const long n,                                        \
                    type *x, const long incx,                            \
                    type *y, const long incy,                            \
                    _Bool *out, const long inc_out){                     \
     _Bool *out_end = out + inc_out * n;                                 \
     vec va, vb; bool_vec vc;                                            \
+    const int stride = _stride;                                         \
     if (incx == 1 && incy == 1 && inc_out == 1){                        \
       _Bool *simd_end = out + (n/stride)*stride;                        \
       while(out != simd_end){                                           \
