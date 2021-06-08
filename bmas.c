@@ -46,20 +46,31 @@ void static inline BMAS_dvec_store_multi(
 
 BMAS_ivec static inline BMAS_ivec_make(
   void* ptr, const long stride, const int elt_size){
-  char* cptr = (char*) ptr;
-  const long cstride = stride*elt_size;
-  BMAS_ivec v;
-  const int nelt = SIMD_SINGLE_STRIDE*4/elt_size;
-  for(int i=0; i<nelt; i++) v[i] = cptr[i*cstride];
-  return v;
+
+  if (elt_size == 1){
+    return BMAS_ivec_make_i8 (ptr, stride);
+  }else if (elt_size == 2){
+    return BMAS_ivec_make_i16(ptr, stride);
+  }else if (elt_size == 4){
+    return BMAS_ivec_make_i32(ptr, stride);
+  }else if (elt_size == 8){
+    return BMAS_ivec_make_i64(ptr, stride);
+  }
 }
 
+#include <stdio.h>
 void static inline BMAS_ivec_store_multi(
   BMAS_ivec v, void* ptr, const long stride, const int elt_size){
-  char* cptr = (char*) ptr;
-  const long cstride = stride*elt_size;
-  const int nelt = SIMD_SINGLE_STRIDE*4/elt_size;
-  for(int i=0; i<nelt; i++) cptr[i*cstride] = v[i];
+  printf("elt_size: %d\n", elt_size);
+  if (elt_size == 1){
+    BMAS_ivec_store_multi_i8 (v, ptr, stride);
+  }else if (elt_size == 2){
+    BMAS_ivec_store_multi_i16(v, ptr, stride);
+  }else if (elt_size == 4){
+    BMAS_ivec_store_multi_i32(v, ptr, stride);
+  }else if (elt_size == 8){
+    BMAS_ivec_store_multi_i64(v, ptr, stride);
+  }
 }
 
 
