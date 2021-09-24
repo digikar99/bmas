@@ -15,7 +15,12 @@ double static inline BMAS_scalar_ddiv(double a, double b){return a/b;}
 int64_t static inline BMAS_scalar_i64add(int64_t a, int64_t b){return a+b;}
 int32_t static inline BMAS_scalar_i32add(int32_t a, int32_t b){return a+b;}
 int16_t static inline BMAS_scalar_i16add(int16_t a, int16_t b){return a+b;}
-int8_t  static inline BMAS_scalar_i8add(int8_t a, int8_t b){return a+b;}
+int8_t  static inline BMAS_scalar_i8add (int8_t a, int8_t b){return a+b;}
+
+int64_t static inline BMAS_scalar_i64sub(int64_t a, int64_t b){return a-b;}
+int32_t static inline BMAS_scalar_i32sub(int32_t a, int32_t b){return a-b;}
+int16_t static inline BMAS_scalar_i16sub(int16_t a, int16_t b){return a-b;}
+int8_t  static inline BMAS_scalar_i8sub (int8_t a, int8_t b){return a-b;}
 
 
 _Bool static inline BMAS_scalar_slt(float a, float b){return a<b;}

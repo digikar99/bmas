@@ -209,7 +209,12 @@ void static inline BMAS_ivec_store_multi_i8(BMAS_ivec v, int8_t* ptr, const int 
 BMAS_ivec static inline BMAS_vector_i64add(BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi64(a, b);}
 BMAS_ivec static inline BMAS_vector_i32add(BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi32(a, b);}
 BMAS_ivec static inline BMAS_vector_i16add(BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi16(a, b);}
-BMAS_ivec static inline BMAS_vector_i8add(BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi8(a, b);}
+BMAS_ivec static inline BMAS_vector_i8add (BMAS_ivec a, BMAS_ivec b){return _mm256_add_epi8(a, b);}
+
+BMAS_ivec static inline BMAS_vector_i64sub(BMAS_ivec a, BMAS_ivec b){return _mm256_sub_epi64(a, b);}
+BMAS_ivec static inline BMAS_vector_i32sub(BMAS_ivec a, BMAS_ivec b){return _mm256_sub_epi32(a, b);}
+BMAS_ivec static inline BMAS_vector_i16sub(BMAS_ivec a, BMAS_ivec b){return _mm256_sub_epi16(a, b);}
+BMAS_ivec static inline BMAS_vector_i8sub (BMAS_ivec a, BMAS_ivec b){return _mm256_sub_epi8(a, b);}
 
 // float comparison
 

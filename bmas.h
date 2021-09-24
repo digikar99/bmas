@@ -97,8 +97,10 @@ two_arg_fn(i32add, int32_t, int32_t);
 two_arg_fn(i16add, int16_t, int16_t);
 two_arg_fn(i8add,  int8_t, int8_t);
 
-two_arg_fn(foobar, float, float);
-
+two_arg_fn(i64sub, int64_t, int64_t);
+two_arg_fn(i32sub, int32_t, int32_t);
+two_arg_fn(i16sub, int16_t, int16_t);
+two_arg_fn(i8sub,  int8_t, int8_t);
 
 one_arg_fn(cbrt);
 
