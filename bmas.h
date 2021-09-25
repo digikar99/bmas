@@ -21,7 +21,7 @@
   void BMAS_##name(const long n,                    \
                    itype* x, const long incx,       \
                    itype* y, const long incy,       \
-                   otype* out, const long inc_out); \
+                   otype* out, const long inc_out);
 
 /* Example expansion of one_arg_fn(sin):
  * void BMAS_ssin(const long n,
@@ -31,6 +31,19 @@
  *               double* x, const long incx,
  *               double* out, const long inc_out);
  */
+
+#define copy_fn(prefix, type) \
+  void BMAS_##prefix##copy(const long n,\
+                           type* x, const long incx,\
+                           type* y, const long incy);
+
+copy_fn(s, float);
+copy_fn(d, double);
+// The only difference is perhaps how 'n' affects how much to copy_fn
+copy_fn(i8,  int8_t);
+copy_fn(i16, int16_t);
+copy_fn(i32, int32_t);
+copy_fn(i64, int64_t);
 
 #define cast_to_single(prefix, itype)                        \
   void BMAS_cast_##prefix##s(const long n,                   \

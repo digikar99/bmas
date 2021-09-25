@@ -92,6 +92,7 @@ void static inline BMAS_ivec_store_multi(
 #include "two_arg_fn_body.h"
 #include "comparison.h"
 #include "cast.h"
+#include "copy.h"
 
 one_arg_fn_body(ssin, SIMD_SINGLE_STRIDE, float, BMAS_svec, float, BMAS_svec);
 one_arg_fn_body(scos, SIMD_SINGLE_STRIDE, float, BMAS_svec, float, BMAS_svec);
