@@ -58,6 +58,20 @@ BMAS_ivec static inline BMAS_ivec_make(
   }
 }
 
+BMAS_ivech static inline BMAS_ivech_make(
+  void* ptr, const long stride, const int elt_size){
+
+  if (elt_size == 1){
+    return BMAS_ivech_make_i8 (ptr, stride);
+  }else if (elt_size == 2){
+    return BMAS_ivech_make_i16(ptr, stride);
+  }else if (elt_size == 4){
+    return BMAS_ivech_make_i32(ptr, stride);
+  }else if (elt_size == 8){
+    return BMAS_ivech_make_i64(ptr, stride);
+  }
+}
+
 #include <stdio.h>
 void static inline BMAS_ivec_store_multi(
   BMAS_ivec v, void* ptr, const long stride, const int elt_size){

@@ -32,12 +32,50 @@
  *               double* out, const long inc_out);
  */
 
-void BMAS_cast_sd(const long n,
-                  float* x, const long incx,
-                  double* y, const long incy);
+#define cast_to_single(prefix, itype)                        \
+  void BMAS_cast_##prefix##s(const long n,                   \
+                             itype* x, const long incx,      \
+                             float* y, const long incy);
+
+#define cast_to_double(prefix, itype)                       \
+  void BMAS_cast_##prefix##d(const long n,                  \
+                            itype* x, const long incx,      \
+                            double* y, const long incy);
+
+cast_to_single(d,   double);
+cast_to_single(i8,  int8_t);
+cast_to_single(i16, int16_t);
+cast_to_single(i32, int32_t);
+cast_to_single(i64, int64_t);
+cast_to_single(u8,  uint8_t);
+cast_to_single(u16, uint16_t);
+cast_to_single(u32, uint32_t);
+cast_to_single(u64, uint64_t);
+
+cast_to_double(s,   float);
+cast_to_double(i8,  int8_t);
+cast_to_double(i16, int16_t);
+cast_to_double(i32, int32_t);
+cast_to_double(i64, int64_t);
+cast_to_double(u8,  uint8_t);
+cast_to_double(u16, uint16_t);
+cast_to_double(u32, uint32_t);
+cast_to_double(u64, uint64_t);
+
+
 void BMAS_cast_ds(const long n,
                   double* x, const long incx,
                   float* y, const long incy);
+
+void BMAS_cast_i8s(const long n,
+                   int8_t* x, const long incx,
+                   float* y, const long incy);
+void BMAS_cast_i16s(const long n,
+                    int8_t* x, const long incx,
+                    float* y, const long incy);
+void BMAS_cast_i32s(const long n,
+                    int8_t* x, const long incx,
+                    float* y, const long incy);
 
 one_arg_fn(sin);
 one_arg_fn(cos);
