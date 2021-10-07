@@ -387,6 +387,16 @@ BMAS_dbool static inline BMAS_vector_dge(BMAS_dvec a, BMAS_dvec b){
   return _mm256_cmp_pd(a, b, _CMP_GE_OQ);
 }
 
+// boolean logical
+BMAS_ivec static inline BMAS_vector_i8and(BMAS_ivec a, BMAS_ivec b){return _mm256_and_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i8or (BMAS_ivec a, BMAS_ivec b){return _mm256_or_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i8xor(BMAS_ivec a, BMAS_ivec b){return _mm256_xor_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i8not(BMAS_ivec a){
+  // intel's page lists epi8 as having a minimal latency-throughtput
+  return _mm256_xor_si256(a, _mm256_cmpeq_epi8(a, a));
+}
+BMAS_ivec static inline BMAS_vector_i8andnot(BMAS_ivec a, BMAS_ivec b){return _mm256_andnot_si256(a, b);}
+
 
 // trigonometric
 

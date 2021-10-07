@@ -22,6 +22,12 @@ int32_t static inline BMAS_scalar_i32sub(int32_t a, int32_t b){return a-b;}
 int16_t static inline BMAS_scalar_i16sub(int16_t a, int16_t b){return a-b;}
 int8_t  static inline BMAS_scalar_i8sub (int8_t a, int8_t b){return a-b;}
 
+_Bool static inline BMAS_scalar_i8and(int8_t a, int8_t b){return a & b;}
+_Bool static inline BMAS_scalar_i8or (int8_t a, int8_t b){return a | b;}
+_Bool static inline BMAS_scalar_i8not(int8_t a){return ~a;}
+_Bool static inline BMAS_scalar_i8xor(int8_t a, int8_t b){return a ^ b;}
+_Bool static inline BMAS_scalar_i8andnot(int8_t a, int8_t b){return a & ~b;}
+
 
 _Bool static inline BMAS_scalar_slt(float a, float b){return a<b;}
 _Bool static inline BMAS_scalar_sle(float a, float b){return a<=b;}
@@ -36,6 +42,7 @@ _Bool static inline BMAS_scalar_deq(double a, double b){return a==b;}
 _Bool static inline BMAS_scalar_dneq(double a, double b){return a!=b;}
 _Bool static inline BMAS_scalar_dge(double a, double b){return a>=b;}
 _Bool static inline BMAS_scalar_dgt(double a, double b){return a>b;}
+
 
 
 // trigonometric

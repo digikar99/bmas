@@ -210,6 +210,13 @@ two_arg_fn_body(i32sub, SIMD_SINGLE_STRIDE,   int32_t, BMAS_ivec, int32_t, BMAS_
 two_arg_fn_body(i16sub, SIMD_SINGLE_STRIDE*2, int16_t, BMAS_ivec, int16_t, BMAS_ivec);
 two_arg_fn_body(i8sub,  SIMD_SINGLE_STRIDE*4, int8_t,  BMAS_ivec, int8_t,  BMAS_ivec);
 
+// Logical Operators
+one_arg_fn_body(i8not,    SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
+two_arg_fn_body(i8and,    SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
+two_arg_fn_body(i8or,     SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
+two_arg_fn_body(i8xor,    SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
+two_arg_fn_body(i8andnot, SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
+
 
 /* // two_arg_fn_body(copysign); */
 /* // two_arg_fn_body(fmax); */

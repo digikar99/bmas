@@ -57,6 +57,11 @@ SSE and AVX512 support exists to a limited extent due to limited developer time.
 | neq                  | +       | +       | -     | -     | -     | -    |
 | gt                   | +       | +       | -     | -     | -     | -    |
 | ge                   | +       | +       | -     | -     | -     | -    |
+| not                  | -       | -       | -     | -     | -     | +    |
+| and                  | -       | -       | -     | -     | -     | +    |
+| or                   | -       | -       | -     | -     | -     | +    |
+| nor                  | -       | -       | -     | -     | -     | +    |
+| andnot               | -       | -       | -     | -     | -     | +    |
 |----------------------|---------|---------|-------|-------|-------|------|
 | fabs                 | +       | +       | -     | -     | -     | -    |
 | trunc                | +       | +       | NA    | NA    | NA    | NA   |
@@ -93,3 +98,6 @@ SSE and AVX512 support exists to a limited extent due to limited developer time.
 
 I am not primarily a C developer, and thus might not abide by the C conventions. A simple example is I'm using a `make.sh` instead of a `Makefile`. This may change once (re)learning these things becomes a higher priority for me.
 
+## Credits
+
+- https://stackoverflow.com/questions/41144668/how-to-efficiently-perform-double-int64-conversions-with-sse-avx

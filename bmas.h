@@ -153,6 +153,12 @@ two_arg_fn(i32sub, int32_t, int32_t);
 two_arg_fn(i16sub, int16_t, int16_t);
 two_arg_fn(i8sub,  int8_t, int8_t);
 
+void BMAS_i8not(const long N, int8_t* x, const long inc_x, int8_t* out, const long inc_out);
+two_arg_fn(i8and, int8_t, int8_t);
+two_arg_fn(i8or,  int8_t, int8_t);
+two_arg_fn(i8xor, int8_t, int8_t);
+two_arg_fn(i8andnot, int8_t, int8_t);
+
 one_arg_fn(cbrt);
 
 one_arg_fn(erf);
