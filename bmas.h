@@ -1,12 +1,12 @@
 #include <stdint.h>
 
-#define one_arg_fn(name)                                \
-  void BMAS_s##name(const long n,                       \
-                    float* x, const long incx,          \
-                    float* out, const long inc_out);    \
-  void BMAS_d##name(const long n,                       \
-                    double* x, const long incx,         \
-                    double* out, const long inc_out);
+#define one_arg_fn(name, itype, otype)                  \
+  void BMAS_##name(const long n,                        \
+                   itype* x, const int64_t incx,        \
+                   otype* out, const int64_t inc_out);  \
+  void BMAS_##name(const long n,                        \
+                   itype* x, const int64_t incx,        \
+                   otype* out, const int64_t inc_out);
 
 #define one_arg_fn_int(name)                        \
   void BMAS_s##name(const long n,                   \
@@ -90,30 +90,62 @@ void BMAS_cast_i32s(const long n,
                     int8_t* x, const long incx,
                     float* y, const long incy);
 
-one_arg_fn(sin);
-one_arg_fn(cos);
-one_arg_fn(tan);
+one_arg_fn(i8abs,  int8_t,  int8_t);
+one_arg_fn(i16abs, int16_t, int16_t);
+one_arg_fn(i32abs, int32_t, int32_t);
+one_arg_fn(i64abs, int64_t, int64_t);
 
-one_arg_fn(asin);
-one_arg_fn(acos);
-one_arg_fn(atan);
+one_arg_fn(ssin, float, float);
+one_arg_fn(scos, float, float);
+one_arg_fn(stan, float, float);
 
-one_arg_fn(sinh);
-one_arg_fn(cosh);
-one_arg_fn(tanh);
-one_arg_fn(asinh);
-one_arg_fn(acosh);
-one_arg_fn(atanh);
+one_arg_fn(sasin,  float, float);
+one_arg_fn(sacos,  float, float);
+one_arg_fn(satan,  float, float);
 
-one_arg_fn(log);
-one_arg_fn(log10);
-one_arg_fn(log2);
-one_arg_fn(log1p);
+one_arg_fn(ssinh,  float, float);
+one_arg_fn(scosh,  float, float);
+one_arg_fn(stanh,  float, float);
+one_arg_fn(sasinh, float, float);
+one_arg_fn(sacosh, float, float);
+one_arg_fn(satanh, float, float);
 
-one_arg_fn(exp);
-one_arg_fn(exp2);
-one_arg_fn(exp10);
-one_arg_fn(expm1);
+one_arg_fn(dsin,  double, double);
+one_arg_fn(dcos,  double, double);
+one_arg_fn(dtan,  double, double);
+
+one_arg_fn(dasin,  double, double);
+one_arg_fn(dacos,  double, double);
+one_arg_fn(datan,  double, double);
+
+one_arg_fn(dsinh,  double, double);
+one_arg_fn(dcosh,  double, double);
+one_arg_fn(dtanh,  double, double);
+one_arg_fn(dasinh, double, double);
+one_arg_fn(dacosh, double, double);
+one_arg_fn(datanh, double, double);
+
+
+one_arg_fn(slog,   float, float);
+one_arg_fn(slog10, float, float);
+one_arg_fn(slog2,  float, float);
+one_arg_fn(slog1p, float, float);
+
+one_arg_fn(sexp,   float, float);
+one_arg_fn(sexp2,  float, float);
+one_arg_fn(sexp10, float, float);
+one_arg_fn(sexpm1, float, float);
+
+one_arg_fn(dlog,   double, double);
+one_arg_fn(dlog10, double, double);
+one_arg_fn(dlog2,  double, double);
+one_arg_fn(dlog1p, double, double);
+
+one_arg_fn(dexp,   double, double);
+one_arg_fn(dexp2,  double, double);
+one_arg_fn(dexp10, double, double);
+one_arg_fn(dexpm1, double, double);
+
 
 two_arg_fn(spow,   float, float);
 two_arg_fn(satan2, float, float);
@@ -198,7 +230,6 @@ two_arg_fn(i64mul, int64_t, int64_t);
 two_arg_fn(i32mul, int32_t, int32_t);
 two_arg_fn(i16mul, int16_t, int16_t);
 two_arg_fn(i8mul,  int8_t, int8_t);
-
 
 two_arg_fn(u64lt, int64_t, int64_t);
 two_arg_fn(u32lt, int32_t, int32_t);
