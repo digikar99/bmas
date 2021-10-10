@@ -1,13 +1,5 @@
 #include <stdint.h>
 
-#define one_arg_fn(name, itype, otype)                  \
-  void BMAS_##name(const long n,                        \
-                   itype* x, const int64_t incx,        \
-                   otype* out, const int64_t inc_out);  \
-  void BMAS_##name(const long n,                        \
-                   itype* x, const int64_t incx,        \
-                   otype* out, const int64_t inc_out);
-
 #define one_arg_fn_int(name)                        \
   void BMAS_s##name(const long n,                   \
                     float* x, const long incx,      \
@@ -89,6 +81,14 @@ void BMAS_cast_i16s(const long n,
 void BMAS_cast_i32s(const long n,
                     int8_t* x, const long incx,
                     float* y, const long incy);
+
+#define one_arg_fn(name, itype, otype)                  \
+  void BMAS_##name(const long n,                        \
+                   itype* x, const int64_t incx,        \
+                   otype* out, const int64_t inc_out);  \
+  void BMAS_##name(const long n,                        \
+                   itype* x, const int64_t incx,        \
+                   otype* out, const int64_t inc_out);
 
 one_arg_fn(i8abs,  int8_t,  int8_t);
 one_arg_fn(i16abs, int16_t, int16_t);
@@ -281,8 +281,36 @@ one_arg_fn(sincospi);
 
 one_arg_fn(sqrt);
 
-one_arg_fn(trunc);
-one_arg_fn(floor);
-one_arg_fn(ceil);
-one_arg_fn(round);
-one_arg_fn(fabs);
+one_arg_fn(strunc, float, float);
+one_arg_fn(sfloor, float, float);
+one_arg_fn(sceil,  float, float);
+one_arg_fn(sround, float, float);
+one_arg_fn(sfabs,  float, float);
+
+one_arg_fn(dtrunc, double, double);
+one_arg_fn(dfloor, double, double);
+one_arg_fn(dceil,  double, double);
+one_arg_fn(dround, double, double);
+one_arg_fn(dfabs,  double, double);
+
+
+#define sum_fn(name, itype, otype) otype BMAS_##name(const long n, itype* x, const int64_t incx);
+sum_fn(ssum, float, float);
+sum_fn(dsum, double, double);
+// Perhaps these should be larger than int8_t and int32_t?
+sum_fn(i8sum,  int8_t,  int8_t);
+sum_fn(i16sum, int16_t, int16_t);
+sum_fn(i32sum, int32_t, int32_t);
+sum_fn(i64sum, int64_t, int64_t);
+
+#define dot_fn(name, itype, otype) \
+  otype BMAS_##name(const long n,\
+                    itype* x, const int64_t incx,\
+                    itype* y, const int64_t incy);
+dot_fn(sdot, float, float);
+dot_fn(ddot, double, double);
+// Perhaps these should be larger than int8_t and int32_t?
+dot_fn(i8dot,  int8_t,  int8_t);
+dot_fn(i16dot, int16_t, int16_t);
+dot_fn(i32dot, int32_t, int32_t);
+dot_fn(i64dot, int64_t, int64_t);

@@ -96,7 +96,8 @@ void static inline BMAS_ivec_store_multi(
 #include "comparison.h"
 #include "cast.h"
 #include "copy.h"
-
+#include "sum_fn_body.h"
+#include "dot_fn_body.h"
 
 copy_fn_body(s,     SIMD_SINGLE_STRIDE, float,   BMAS_svec);
 copy_fn_body(d,     SIMD_DOUBLE_STRIDE, double,  BMAS_dvec);
@@ -114,6 +115,21 @@ cast_to_float_body(u8,  SIMD_SINGLE_STRIDE, uint8_t,  BMAS_ivech, BMAS_svec,  BM
 cast_to_float_body(u16, SIMD_SINGLE_STRIDE, uint16_t, BMAS_ivech, BMAS_svec,  BMAS_ivech_to_svec_u16);
 cast_to_float_body(u32, SIMD_DOUBLE_STRIDE, uint32_t, BMAS_ivech, BMAS_svech, BMAS_ivech_to_svec_u32);
 cast_to_float_body(u64, SIMD_DOUBLE_STRIDE, uint64_t, BMAS_ivec,  BMAS_svech, BMAS_ivec_to_svech_u64);
+
+// int8_t can be useful for tasks like counting _Bool elements
+sum_fn_body(ssum,     SIMD_SINGLE_STRIDE, float,   BMAS_svec, float,   szero, sadd, ssum);
+sum_fn_body(dsum,     SIMD_DOUBLE_STRIDE, double,  BMAS_dvec, double,  dzero, dadd, dsum);
+sum_fn_body(i64sum,   SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, int64_t, izero, i64add, i64sum);
+sum_fn_body(i32sum,   SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, int32_t, izero, i32add, i32sum);
+sum_fn_body(i16sum, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, int16_t, izero, i16add, i16sum);
+sum_fn_body(i8sum,  4*SIMD_SINGLE_STRIDE, int8_t,  BMAS_ivec, int8_t,  izero, i8add,  i8sum);
+
+dot_fn_body(sdot,     SIMD_SINGLE_STRIDE, float,   BMAS_svec, float,   szero, sadd, smul, ssum);
+dot_fn_body(ddot,     SIMD_DOUBLE_STRIDE, double,  BMAS_dvec, double,  dzero, dadd, dmul, dsum);
+dot_fn_body(i64dot,   SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, int64_t, izero, i64add, i64mul, i64sum);
+dot_fn_body(i32dot,   SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, int32_t, izero, i32add, i32mul, i32sum);
+dot_fn_body(i16dot, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, int16_t, izero, i16add, i16mul, i16sum);
+dot_fn_body(i8dot,  4*SIMD_SINGLE_STRIDE, int8_t,  BMAS_ivec, int8_t,  izero, i8add,  i8mul,  i8sum);
 
 
 one_arg_fn_body(ssin, SIMD_SINGLE_STRIDE, float, BMAS_svec, float, BMAS_svec);

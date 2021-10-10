@@ -1,7 +1,8 @@
 
-typedef __m128 BMAS_svech; // half
 typedef __m256 BMAS_svec;
+typedef __m128 BMAS_svech; // half
 typedef __m256d BMAS_dvec;
+typedef __m128d BMAS_dvech; // half
 typedef __m256 BMAS_sbool;
 typedef __m256d BMAS_dbool;
 typedef __m256i BMAS_ivec;
@@ -9,6 +10,10 @@ typedef __m128i BMAS_ivech;
 
 #define SIMD_SINGLE_STRIDE 8
 #define SIMD_DOUBLE_STRIDE 4
+
+BMAS_svec static inline BMAS_vector_szero(){return _mm256_setzero_ps();}
+BMAS_dvec static inline BMAS_vector_dzero(){return _mm256_setzero_pd();}
+BMAS_ivec static inline BMAS_vector_izero(){return _mm256_setzero_si256();}
 
 // store-load
 
@@ -241,7 +246,7 @@ BMAS_svech static inline BMAS_ivec_to_svech_u64(BMAS_ivec v){
 
 
 
-// basic float arithmetic
+// basic arithmetic and sum and dot
 
 BMAS_svec static inline BMAS_vector_sadd(BMAS_svec a, BMAS_svec b){return _mm256_add_ps(a, b);}
 BMAS_svec static inline BMAS_vector_ssub(BMAS_svec a, BMAS_svec b){return _mm256_sub_ps(a, b);}
@@ -252,6 +257,69 @@ BMAS_dvec static inline BMAS_vector_dadd(BMAS_dvec a, BMAS_dvec b){return _mm256
 BMAS_dvec static inline BMAS_vector_dsub(BMAS_dvec a, BMAS_dvec b){return _mm256_sub_pd(a, b);}
 BMAS_dvec static inline BMAS_vector_dmul(BMAS_dvec a, BMAS_dvec b){return _mm256_mul_pd(a, b);}
 BMAS_dvec static inline BMAS_vector_ddiv(BMAS_dvec a, BMAS_dvec b){return _mm256_div_pd(a, b);}
+
+float static inline BMAS_vector_ssum(BMAS_svec a){
+  BMAS_svech v1 = _mm256_castps256_ps128(a);
+  BMAS_svech v2 = _mm256_extractf128_ps(a, 1);
+  BMAS_svech v3 = _mm_add_ps(v1, v2); // 4 2-sums
+  // 1st and 2nd elements of v4 should be from the 3rd and 4th of v3 (1-indexed)
+  BMAS_svech v4 = _mm_permute_ps(v3, 0b11101110);
+  BMAS_svech v5 = _mm_add_ps(v3, v4); // 2 4-sums
+  // 1st element of v6 should be from the second element of v5
+  BMAS_svech v6 = _mm_permute_ps(v5, 0b01010101);
+  BMAS_svech v = _mm_add_ps(v5, v6);
+  return _mm_cvtss_f32(v);
+}
+
+double static inline BMAS_vector_dsum(BMAS_dvec a){
+  BMAS_dvech v1 = _mm256_castpd256_pd128(a);
+  BMAS_dvech v2 = _mm256_extractf128_pd(a, 1);
+  BMAS_dvech v3 = _mm_add_pd(v1, v2); // 2 2-sums
+  // move the 2nd element to 1st position
+  BMAS_dvech v4 = _mm_permute_pd(v3, 0b01);
+  BMAS_dvech v = _mm_add_pd(v3, v4);
+  return _mm_cvtsd_f64(v);
+}
+
+int64_t static inline BMAS_vector_i64sum(BMAS_ivec a){
+  BMAS_ivech v1 = _mm256_castsi256_si128(a);
+  BMAS_ivech v2 = _mm256_extracti128_si256(a, 1);
+  BMAS_ivech v3 = _mm_add_epi64(v1, v2); // 2 2-sums
+  // move the 2nd element to 1st position
+  BMAS_ivech v4 = _mm_bsrli_si128(v3, 8);
+  BMAS_ivech v = _mm_add_epi64(v3, v4);
+  return _mm_extract_epi64(v, 0);
+}
+
+int32_t static inline BMAS_vector_i32sum(BMAS_ivec a){
+  BMAS_ivech v1 = _mm256_castsi256_si128(a);
+  BMAS_ivech v2 = _mm256_extracti128_si256(a, 1);
+  BMAS_ivech v3 = _mm_add_epi32(v1, v2); // 4 2-sums
+  // 1st and 2nd elements of v4 should be from the 3rd and 4th of v3 (1-indexed)
+  BMAS_ivech v4 = _mm_bsrli_si128(v3, 8);
+  BMAS_ivech v5 = _mm_add_epi32(v3, v4); // 2 4-sums
+  // 1st element of v6 should be from the second element of v5
+  BMAS_ivech v6 = _mm_bsrli_si128(v5, 4);
+  BMAS_ivech v = _mm_add_epi32(v5, v6);
+  return _mm_extract_epi32(v, 0);
+}
+
+int16_t static inline BMAS_vector_i16sum(BMAS_ivec a){
+  BMAS_ivech v1 = _mm256_castsi256_si128(a);
+  BMAS_ivech v2 = _mm256_extracti128_si256(a, 1);
+  BMAS_ivec v1e = _mm256_cvtepi16_epi32(v1);
+  BMAS_ivec v2e = _mm256_cvtepi16_epi32(v2);
+  return BMAS_vector_i32sum(v1e) + BMAS_vector_i32sum(v2e);
+}
+
+int8_t static inline BMAS_vector_i8sum(BMAS_ivec a){
+  BMAS_ivech v1 = _mm256_castsi256_si128(a);
+  BMAS_ivech v2 = _mm256_extracti128_si256(a, 1);
+  BMAS_ivec v1e = _mm256_cvtepi8_epi16(v1);
+  BMAS_ivec v2e = _mm256_cvtepi8_epi16(v2);
+  return BMAS_vector_i16sum(v1e) + BMAS_vector_i16sum(v2e);
+}
+
 
 // integer insert and extract - we need to do this because compiler needs "immediates"
 
