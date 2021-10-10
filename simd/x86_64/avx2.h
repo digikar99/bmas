@@ -440,7 +440,7 @@ BMAS_ivec static inline BMAS_vector_i64mul(BMAS_ivec a, BMAS_ivec b){
   __m256i prod    = _mm256_add_epi64(prodll,prodlh3);       // a0Lb0L+(a0Lb0H+a0Hb0L)<<32, a1Lb1L+(a1Lb1H+a1Hb1L)<<32
   return  prod;
 }
-BMAS_ivec static inline BMAS_vector_i32mul(BMAS_ivec a, BMAS_ivec b){return _mm256_mul_epi32(a, b);}
+BMAS_ivec static inline BMAS_vector_i32mul(BMAS_ivec a, BMAS_ivec b){return _mm256_mullo_epi32(a, b);}
 BMAS_ivec static inline BMAS_vector_i16mul(BMAS_ivec a, BMAS_ivec b){return _mm256_mullo_epi16(a, b);}
 BMAS_ivec static inline BMAS_vector_i8mul (BMAS_ivec a, BMAS_ivec b){
 
@@ -449,13 +449,30 @@ BMAS_ivec static inline BMAS_vector_i8mul (BMAS_ivec a, BMAS_ivec b){
   BMAS_ivec ah1_16bit = _mm256_cvtepi8_epi16(ah1);
   BMAS_ivec bh1_16bit = _mm256_cvtepi8_epi16(bh1);
   BMAS_ivec v1 = _mm256_mullo_epi16(ah1_16bit, bh1_16bit);
+
   BMAS_ivech ah2 = _mm256_extractf128_si256(a, 1);
   BMAS_ivech bh2 = _mm256_extractf128_si256(b, 1);
   BMAS_ivec ah2_16bit = _mm256_cvtepi8_epi16(ah2);
   BMAS_ivec bh2_16bit = _mm256_cvtepi8_epi16(bh2);
   BMAS_ivec v2 = _mm256_mullo_epi16(ah2_16bit, bh2_16bit);
 
-  BMAS_ivec v = _mm256_packs_epi16(v1, v2);
+  // Collect low 8 bits into the lower 64 bits of each 128 bit half-register
+  v1 = _mm256_shuffle_epi8(v1, _mm256_setr_epi32(0x06040200, 0x0E0C0A08, 0x0, 0x0,
+                                                 0x06040200, 0x0E0C0A08, 0x0, 0x0));
+  v2 = _mm256_shuffle_epi8(v2, _mm256_setr_epi32(0x0, 0x0, 0x06040200, 0x0E0C0A08,
+                                                 0x0, 0x0, 0x06040200, 0x0E0C0A08));
+
+  // Collect low 8 bits into the lower 64 bits of each 128 bit half-register
+  v1 = _mm256_and_si256(v1, _mm256_setr_epi64x(0xFFFFFFFFFFFFFFFF, 0x0000000000000000,
+                                               0xFFFFFFFFFFFFFFFF, 0x0000000000000000));
+  v2 = _mm256_and_si256(v2, _mm256_setr_epi64x(0x0000000000000000, 0xFFFFFFFFFFFFFFFF,
+                                               0x0000000000000000, 0xFFFFFFFFFFFFFFFF));
+  BMAS_ivec v = _mm256_or_si256(v1, v2);
+  // Reorder to get in the correct order
+  v = _mm256_permute4x64_epi64(v, 0b11011000);
+  return v;
+}
+
   v = _mm256_permute4x64_epi64(v, 0b11011000);
   return v;
 }
