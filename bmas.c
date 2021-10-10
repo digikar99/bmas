@@ -1,6 +1,8 @@
 #include <math.h>
 #include <string.h>
 #include <stdint.h>
+
+#include "macro_loop.h"
 #include "scalar.h"
 
 #if defined(__x86_64)
@@ -183,19 +185,77 @@ two_arg_fn_body(dmul,   SIMD_DOUBLE_STRIDE, double, BMAS_dvec, double, BMAS_dvec
 two_arg_fn_body(ddiv,   SIMD_DOUBLE_STRIDE, double, BMAS_dvec, double, BMAS_dvec);
 
 
-two_arg_fn_body_comparison(slt,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
-two_arg_fn_body_comparison(sle,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
-two_arg_fn_body_comparison(seq,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
-two_arg_fn_body_comparison(sneq, SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
-two_arg_fn_body_comparison(sge,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
-two_arg_fn_body_comparison(sgt,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
+two_arg_fn_body_comparisonx4(slt,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
+two_arg_fn_body_comparisonx4(sle,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
+two_arg_fn_body_comparisonx4(seq,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
+two_arg_fn_body_comparisonx4(sneq, SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
+two_arg_fn_body_comparisonx4(sge,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
+two_arg_fn_body_comparisonx4(sgt,  SIMD_SINGLE_STRIDE, float, BMAS_svec, BMAS_sbool);
 
-two_arg_fn_body_comparison(dlt,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
-two_arg_fn_body_comparison(dle,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
-two_arg_fn_body_comparison(deq,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
-two_arg_fn_body_comparison(dneq, SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
-two_arg_fn_body_comparison(dge,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
-two_arg_fn_body_comparison(dgt,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
+two_arg_fn_body_comparisonx4(dlt,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
+two_arg_fn_body_comparisonx4(dle,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
+two_arg_fn_body_comparisonx4(deq,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
+two_arg_fn_body_comparisonx4(dneq, SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
+two_arg_fn_body_comparisonx4(dge,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
+two_arg_fn_body_comparisonx4(dgt,  SIMD_DOUBLE_STRIDE, double, BMAS_dvec, BMAS_dbool);
+
+
+two_arg_fn_body_comparisonx1(i8lt,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(i8le,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(i8eq,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(i8neq, 4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(i8ge,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(i8gt,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+
+two_arg_fn_body_comparisonx2(i16lt,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(i16le,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(i16eq,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(i16neq, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(i16ge,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(i16gt,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+
+two_arg_fn_body_comparisonx4(i32lt,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i32le,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i32eq,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i32neq, SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i32ge,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i32gt,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+
+two_arg_fn_body_comparisonx4(i64lt,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i64le,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i64eq,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i64neq, SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i64ge,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(i64gt,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+
+
+two_arg_fn_body_comparisonx1(u8lt,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(u8le,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(u8eq,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(u8neq, 4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(u8ge,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx1(u8gt,  4*SIMD_SINGLE_STRIDE, int8_t, BMAS_ivec, BMAS_ivec);
+
+two_arg_fn_body_comparisonx2(u16lt,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(u16le,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(u16eq,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(u16neq, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(u16ge,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx2(u16gt,  2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, BMAS_ivec);
+
+two_arg_fn_body_comparisonx4(u32lt,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u32le,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u32eq,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u32neq, SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u32ge,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u32gt,  SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, BMAS_ivec);
+
+two_arg_fn_body_comparisonx4(u64lt,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u64le,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u64eq,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u64neq, SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u64ge,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
+two_arg_fn_body_comparisonx4(u64gt,  SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, BMAS_ivec);
 
 
 // Integer Arithmetic

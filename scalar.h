@@ -22,11 +22,11 @@ int32_t static inline BMAS_scalar_i32sub(int32_t a, int32_t b){return a-b;}
 int16_t static inline BMAS_scalar_i16sub(int16_t a, int16_t b){return a-b;}
 int8_t  static inline BMAS_scalar_i8sub (int8_t a, int8_t b){return a-b;}
 
-_Bool static inline BMAS_scalar_i8and(int8_t a, int8_t b){return a & b;}
-_Bool static inline BMAS_scalar_i8or (int8_t a, int8_t b){return a | b;}
-_Bool static inline BMAS_scalar_i8not(int8_t a){return ~a;}
-_Bool static inline BMAS_scalar_i8xor(int8_t a, int8_t b){return a ^ b;}
-_Bool static inline BMAS_scalar_i8andnot(int8_t a, int8_t b){return a & ~b;}
+int8_t static inline BMAS_scalar_i8and(int8_t a, int8_t b){return a & b;}
+int8_t static inline BMAS_scalar_i8or (int8_t a, int8_t b){return a | b;}
+int8_t static inline BMAS_scalar_i8not(int8_t a){return ~a;}
+int8_t static inline BMAS_scalar_i8xor(int8_t a, int8_t b){return a ^ b;}
+int8_t static inline BMAS_scalar_i8andnot(int8_t a, int8_t b){return a & ~b;}
 
 
 _Bool static inline BMAS_scalar_slt(float a, float b){return a<b;}
@@ -42,6 +42,63 @@ _Bool static inline BMAS_scalar_deq(double a, double b){return a==b;}
 _Bool static inline BMAS_scalar_dneq(double a, double b){return a!=b;}
 _Bool static inline BMAS_scalar_dge(double a, double b){return a>=b;}
 _Bool static inline BMAS_scalar_dgt(double a, double b){return a>b;}
+
+_Bool static inline BMAS_scalar_i8lt(int8_t a, int8_t b){return a<b;}
+_Bool static inline BMAS_scalar_i8le(int8_t a, int8_t b){return a<=b;}
+_Bool static inline BMAS_scalar_i8eq(int8_t a, int8_t b){return a==b;}
+_Bool static inline BMAS_scalar_i8neq(int8_t a, int8_t b){return a!=b;}
+_Bool static inline BMAS_scalar_i8ge(int8_t a, int8_t b){return a>=b;}
+_Bool static inline BMAS_scalar_i8gt(int8_t a, int8_t b){return a>b;}
+
+_Bool static inline BMAS_scalar_i16lt(int16_t a, int16_t b){return a<b;}
+_Bool static inline BMAS_scalar_i16le(int16_t a, int16_t b){return a<=b;}
+_Bool static inline BMAS_scalar_i16eq(int16_t a, int16_t b){return a==b;}
+_Bool static inline BMAS_scalar_i16neq(int16_t a, int16_t b){return a!=b;}
+_Bool static inline BMAS_scalar_i16ge(int16_t a, int16_t b){return a>=b;}
+_Bool static inline BMAS_scalar_i16gt(int16_t a, int16_t b){return a>b;}
+
+_Bool static inline BMAS_scalar_i32lt(int32_t a, int32_t b){return a<b;}
+_Bool static inline BMAS_scalar_i32le(int32_t a, int32_t b){return a<=b;}
+_Bool static inline BMAS_scalar_i32eq(int32_t a, int32_t b){return a==b;}
+_Bool static inline BMAS_scalar_i32neq(int32_t a, int32_t b){return a!=b;}
+_Bool static inline BMAS_scalar_i32ge(int32_t a, int32_t b){return a>=b;}
+_Bool static inline BMAS_scalar_i32gt(int32_t a, int32_t b){return a>b;}
+
+_Bool static inline BMAS_scalar_i64lt(int64_t a, int64_t b){return a<b;}
+_Bool static inline BMAS_scalar_i64le(int64_t a, int64_t b){return a<=b;}
+_Bool static inline BMAS_scalar_i64eq(int64_t a, int64_t b){return a==b;}
+_Bool static inline BMAS_scalar_i64neq(int64_t a, int64_t b){return a!=b;}
+_Bool static inline BMAS_scalar_i64ge(int64_t a, int64_t b){return a>=b;}
+_Bool static inline BMAS_scalar_i64gt(int64_t a, int64_t b){return a>b;}
+
+
+_Bool static inline BMAS_scalar_u8lt(uint8_t a, uint8_t b){return a<b;}
+_Bool static inline BMAS_scalar_u8le(uint8_t a, uint8_t b){return a<=b;}
+_Bool static inline BMAS_scalar_u8eq(uint8_t a, uint8_t b){return a==b;}
+_Bool static inline BMAS_scalar_u8neq(uint8_t a, uint8_t b){return a!=b;}
+_Bool static inline BMAS_scalar_u8ge(uint8_t a, uint8_t b){return a>=b;}
+_Bool static inline BMAS_scalar_u8gt(uint8_t a, uint8_t b){return a>b;}
+
+_Bool static inline BMAS_scalar_u16lt(uint16_t a, uint16_t b){return a<b;}
+_Bool static inline BMAS_scalar_u16le(uint16_t a, uint16_t b){return a<=b;}
+_Bool static inline BMAS_scalar_u16eq(uint16_t a, uint16_t b){return a==b;}
+_Bool static inline BMAS_scalar_u16neq(uint16_t a, uint16_t b){return a!=b;}
+_Bool static inline BMAS_scalar_u16ge(uint16_t a, uint16_t b){return a>=b;}
+_Bool static inline BMAS_scalar_u16gt(uint16_t a, uint16_t b){return a>b;}
+
+_Bool static inline BMAS_scalar_u32lt(uint32_t a, uint32_t b){return a<b;}
+_Bool static inline BMAS_scalar_u32le(uint32_t a, uint32_t b){return a<=b;}
+_Bool static inline BMAS_scalar_u32eq(uint32_t a, uint32_t b){return a==b;}
+_Bool static inline BMAS_scalar_u32neq(uint32_t a, uint32_t b){return a!=b;}
+_Bool static inline BMAS_scalar_u32ge(uint32_t a, uint32_t b){return a>=b;}
+_Bool static inline BMAS_scalar_u32gt(uint32_t a, uint32_t b){return a>b;}
+
+_Bool static inline BMAS_scalar_u64lt(uint64_t a, uint64_t b){return a<b;}
+_Bool static inline BMAS_scalar_u64le(uint64_t a, uint64_t b){return a<=b;}
+_Bool static inline BMAS_scalar_u64eq(uint64_t a, uint64_t b){return a==b;}
+_Bool static inline BMAS_scalar_u64neq(uint64_t a, uint64_t b){return a!=b;}
+_Bool static inline BMAS_scalar_u64ge(uint64_t a, uint64_t b){return a>=b;}
+_Bool static inline BMAS_scalar_u64gt(uint64_t a, uint64_t b){return a>b;}
 
 
 
