@@ -361,6 +361,40 @@ BMAS_ivec static inline BMAS_vector_i32sub(BMAS_ivec a, BMAS_ivec b){return _mm2
 BMAS_ivec static inline BMAS_vector_i16sub(BMAS_ivec a, BMAS_ivec b){return _mm256_sub_epi16(a, b);}
 BMAS_ivec static inline BMAS_vector_i8sub (BMAS_ivec a, BMAS_ivec b){return _mm256_sub_epi8(a, b);}
 
+BMAS_ivec static inline BMAS_vector_i64mul(BMAS_ivec a, BMAS_ivec b){
+  // Credits: https://stackoverflow.com/questions/37296289/fastest-way-to-multiply-an-array-of-int64-t
+  __m256i bswap   = _mm256_shuffle_epi32(b,0xB1);           // swap H<->L
+  __m256i prodlh  = _mm256_mullo_epi32(a,bswap);            // 32 bit L*H products
+  __m256i zero    = _mm256_setzero_si256();                 // 0
+  __m256i prodlh2 = _mm256_hadd_epi32(prodlh,zero);         // a0Lb0H+a0Hb0L,a1Lb1H+a1Hb1L,0,0
+  __m256i prodlh3 = _mm256_shuffle_epi32(prodlh2,0x73);     // 0, a0Lb0H+a0Hb0L, 0, a1Lb1H+a1Hb1L
+  __m256i prodll  = _mm256_mul_epu32(a,b);                  // a0Lb0L,a1Lb1L, 64 bit unsigned products
+  __m256i prod    = _mm256_add_epi64(prodll,prodlh3);       // a0Lb0L+(a0Lb0H+a0Hb0L)<<32, a1Lb1L+(a1Lb1H+a1Hb1L)<<32
+  return  prod;
+}
+BMAS_ivec static inline BMAS_vector_i32mul(BMAS_ivec a, BMAS_ivec b){return _mm256_mul_epi32(a, b);}
+BMAS_ivec static inline BMAS_vector_i16mul(BMAS_ivec a, BMAS_ivec b){return _mm256_mullo_epi16(a, b);}
+BMAS_ivec static inline BMAS_vector_i8mul (BMAS_ivec a, BMAS_ivec b){
+
+  BMAS_ivech ah1 = _mm256_extractf128_si256(a, 0);
+  BMAS_ivech bh1 = _mm256_extractf128_si256(b, 0);
+  BMAS_ivec ah1_16bit = _mm256_cvtepi8_epi16(ah1);
+  BMAS_ivec bh1_16bit = _mm256_cvtepi8_epi16(bh1);
+  BMAS_ivec v1 = _mm256_mullo_epi16(ah1_16bit, bh1_16bit);
+  BMAS_ivech ah2 = _mm256_extractf128_si256(a, 1);
+  BMAS_ivech bh2 = _mm256_extractf128_si256(b, 1);
+  BMAS_ivec ah2_16bit = _mm256_cvtepi8_epi16(ah2);
+  BMAS_ivec bh2_16bit = _mm256_cvtepi8_epi16(bh2);
+  BMAS_ivec v2 = _mm256_mullo_epi16(ah2_16bit, bh2_16bit);
+
+  BMAS_ivec v = _mm256_packs_epi16(v1, v2);
+  v = _mm256_permute4x64_epi64(v, 0b11011000);
+  return v;
+}
+
+
+
+
 // float comparison
 
 // A quick test on numpy will suggest that numpy uses the "ordered" "non-signalling"

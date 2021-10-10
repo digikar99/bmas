@@ -194,6 +194,12 @@ two_arg_fn(i32sub, int32_t, int32_t);
 two_arg_fn(i16sub, int16_t, int16_t);
 two_arg_fn(i8sub,  int8_t, int8_t);
 
+two_arg_fn(i64mul, int64_t, int64_t);
+two_arg_fn(i32mul, int32_t, int32_t);
+two_arg_fn(i16mul, int16_t, int16_t);
+two_arg_fn(i8mul,  int8_t, int8_t);
+
+
 two_arg_fn(u64lt, int64_t, int64_t);
 two_arg_fn(u32lt, int32_t, int32_t);
 two_arg_fn(u16lt, int16_t, int16_t);
