@@ -208,58 +208,63 @@ two_arg_fn(i8neq,  int8_t, int8_t);
 two_arg_fn(i64gt, int64_t, int64_t);
 two_arg_fn(i32gt, int32_t, int32_t);
 two_arg_fn(i16gt, int16_t, int16_t);
-two_arg_fn(i8gt,  int8_t, int8_t);
+two_arg_fn(i8gt,  int8_t,  int8_t);
 
 two_arg_fn(i64ge, int64_t, int64_t);
 two_arg_fn(i32ge, int32_t, int32_t);
 two_arg_fn(i16ge, int16_t, int16_t);
-two_arg_fn(i8ge,  int8_t, int8_t);
+two_arg_fn(i8ge,  int8_t,  int8_t);
 
 
 two_arg_fn(i64add, int64_t, int64_t);
 two_arg_fn(i32add, int32_t, int32_t);
 two_arg_fn(i16add, int16_t, int16_t);
-two_arg_fn(i8add,  int8_t, int8_t);
+two_arg_fn(i8add,  int8_t,  int8_t);
 
 two_arg_fn(i64sub, int64_t, int64_t);
 two_arg_fn(i32sub, int32_t, int32_t);
 two_arg_fn(i16sub, int16_t, int16_t);
-two_arg_fn(i8sub,  int8_t, int8_t);
+two_arg_fn(i8sub,  int8_t,  int8_t);
 
 two_arg_fn(i64mul, int64_t, int64_t);
 two_arg_fn(i32mul, int32_t, int32_t);
 two_arg_fn(i16mul, int16_t, int16_t);
-two_arg_fn(i8mul,  int8_t, int8_t);
+two_arg_fn(i8mul,  int8_t,  int8_t);
+
+two_arg_fn(u64mul, uint64_t, uint64_t);
+two_arg_fn(u32mul, uint32_t, uint32_t);
+two_arg_fn(u16mul, uint16_t, uint16_t);
+two_arg_fn(u8mul,  uint8_t,  uint8_t);
 
 two_arg_fn(u64lt, int64_t, int64_t);
 two_arg_fn(u32lt, int32_t, int32_t);
 two_arg_fn(u16lt, int16_t, int16_t);
-two_arg_fn(u8lt,  int8_t, int8_t);
+two_arg_fn(u8lt,  int8_t,  int8_t);
 
 two_arg_fn(u64le, int64_t, int64_t);
 two_arg_fn(u32le, int32_t, int32_t);
 two_arg_fn(u16le, int16_t, int16_t);
-two_arg_fn(u8le,  int8_t, int8_t);
+two_arg_fn(u8le,  int8_t,  int8_t);
 
 two_arg_fn(u64eq, int64_t, int64_t);
 two_arg_fn(u32eq, int32_t, int32_t);
 two_arg_fn(u16eq, int16_t, int16_t);
-two_arg_fn(u8eq,  int8_t, int8_t);
+two_arg_fn(u8eq,  int8_t,  int8_t);
 
 two_arg_fn(u64neq, int64_t, int64_t);
 two_arg_fn(u32neq, int32_t, int32_t);
 two_arg_fn(u16neq, int16_t, int16_t);
-two_arg_fn(u8neq,  int8_t, int8_t);
+two_arg_fn(u8neq,  int8_t,  int8_t);
 
 two_arg_fn(u64gt, int64_t, int64_t);
 two_arg_fn(u32gt, int32_t, int32_t);
 two_arg_fn(u16gt, int16_t, int16_t);
-two_arg_fn(u8gt,  int8_t, int8_t);
+two_arg_fn(u8gt,  int8_t,  int8_t);
 
 two_arg_fn(u64ge, int64_t, int64_t);
 two_arg_fn(u32ge, int32_t, int32_t);
 two_arg_fn(u16ge, int16_t, int16_t);
-two_arg_fn(u8ge,  int8_t, int8_t);
+two_arg_fn(u8ge,  int8_t,  int8_t);
 
 
 void BMAS_i8not(const long N, int8_t* x, const long inc_x, int8_t* out, const long inc_out);

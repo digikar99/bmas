@@ -473,6 +473,46 @@ BMAS_ivec static inline BMAS_vector_i8mul (BMAS_ivec a, BMAS_ivec b){
   return v;
 }
 
+BMAS_ivec static inline BMAS_vector_u64mul(BMAS_ivec a, BMAS_ivec b){
+  // Identical to i64mul except for the use of mul_epu32 instead of mul_epi32
+  __m256i bswap   = _mm256_shuffle_epi32(b,0xB1);           // swap H<->L
+  __m256i prodlh  = _mm256_mullo_epi32(a,bswap);            // 32 bit L*H products
+  __m256i zero    = _mm256_setzero_si256();                 // 0
+  __m256i prodlh2 = _mm256_hadd_epi32(prodlh,zero);         // a0Lb0H+a0Hb0L,a1Lb1H+a1Hb1L,0,0
+  __m256i prodlh3 = _mm256_shuffle_epi32(prodlh2,0x73);     // 0, a0Lb0H+a0Hb0L, 0, a1Lb1H+a1Hb1L
+  __m256i prodll  = _mm256_mul_epu32(a,b);                  // a0Lb0L,a1Lb1L, 64 bit unsigned products
+  __m256i prod    = _mm256_add_epi64(prodll,prodlh3);       // a0Lb0L+(a0Lb0H+a0Hb0L)<<32, a1Lb1L+(a1Lb1H+a1Hb1L)<<32
+  return  prod;
+}
+BMAS_ivec static inline BMAS_vector_u32mul(BMAS_ivec a, BMAS_ivec b){return _mm256_mullo_epi32(a, b);}
+BMAS_ivec static inline BMAS_vector_u16mul(BMAS_ivec a, BMAS_ivec b){return _mm256_mullo_epi16(a, b);}
+BMAS_ivec static inline BMAS_vector_u8mul(BMAS_ivec a, BMAS_ivec b){
+  // Identical to i8mul except for the use of cvtepu8_epi16 instead of cvtepi8_epi16
+  BMAS_ivech ah1 = _mm256_extractf128_si256(a, 0);
+  BMAS_ivech bh1 = _mm256_extractf128_si256(b, 0);
+  BMAS_ivec ah1_16bit = _mm256_cvtepu8_epi16(ah1);
+  BMAS_ivec bh1_16bit = _mm256_cvtepu8_epi16(bh1);
+  BMAS_ivec v1 = _mm256_mullo_epi16(ah1_16bit, bh1_16bit);
+
+  BMAS_ivech ah2 = _mm256_extractf128_si256(a, 1);
+  BMAS_ivech bh2 = _mm256_extractf128_si256(b, 1);
+  BMAS_ivec ah2_16bit = _mm256_cvtepu8_epi16(ah2);
+  BMAS_ivec bh2_16bit = _mm256_cvtepu8_epi16(bh2);
+  BMAS_ivec v2 = _mm256_mullo_epi16(ah2_16bit, bh2_16bit);
+
+  // Collect low 8 bits into the lower 64 bits of each 128 bit half-register
+  v1 = _mm256_shuffle_epi8(v1, _mm256_setr_epi32(0x06040200, 0x0E0C0A08, 0x0, 0x0,
+                                                 0x06040200, 0x0E0C0A08, 0x0, 0x0));
+  v2 = _mm256_shuffle_epi8(v2, _mm256_setr_epi32(0x0, 0x0, 0x06040200, 0x0E0C0A08,
+                                                 0x0, 0x0, 0x06040200, 0x0E0C0A08));
+
+  // Collect low 8 bits into the lower 64 bits of each 128 bit half-register
+  v1 = _mm256_and_si256(v1, _mm256_setr_epi64x(0xFFFFFFFFFFFFFFFF, 0x0000000000000000,
+                                               0xFFFFFFFFFFFFFFFF, 0x0000000000000000));
+  v2 = _mm256_and_si256(v2, _mm256_setr_epi64x(0x0000000000000000, 0xFFFFFFFFFFFFFFFF,
+                                               0x0000000000000000, 0xFFFFFFFFFFFFFFFF));
+  BMAS_ivec v = _mm256_or_si256(v1, v2);
+  // Reorder to get in the correct order
   v = _mm256_permute4x64_epi64(v, 0b11011000);
   return v;
 }
