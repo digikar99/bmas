@@ -1,5 +1,3 @@
-#include <stdint.h>
-
 #define copy_fn_body(prefix, _stride, type, vec)        \
   void BMAS_##prefix##copy(const long n,                \
                            type *x, const long incx,    \
@@ -49,10 +47,3 @@
       y += incy;                                        \
     }                                                   \
   };                                                                    
-
-copy_fn_body(s,     SIMD_SINGLE_STRIDE, float,   BMAS_svec);
-copy_fn_body(d,     SIMD_DOUBLE_STRIDE, double,  BMAS_dvec);
-copy_fn_body(i8,  4*SIMD_SINGLE_STRIDE, int8_t,  BMAS_ivec);
-copy_fn_body(i16, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec);
-copy_fn_body(i32,   SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec);
-copy_fn_body(i64,   SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec);

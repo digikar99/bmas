@@ -1,4 +1,3 @@
-
 #define cast_to_double_body(prefix, from, from_vec, cvt_vec)            \
   void BMAS_cast_##prefix##d(const long n,                              \
                              from* x, const long incx,                  \
@@ -118,15 +117,3 @@ cast_to_double_body(u64, uint64_t, BMAS_ivec,  BMAS_ivec_to_dvec_u64);
       y += incy;                                                        \
     }                                                                   \
   }
-
-cast_to_float_body(d,   SIMD_DOUBLE_STRIDE, double,   BMAS_dvec,  BMAS_svech, BMAS_dvec_to_svech);
-cast_to_float_body(i8,  SIMD_SINGLE_STRIDE, int8_t,   BMAS_ivech, BMAS_svec,  BMAS_ivech_to_svec_i8);
-cast_to_float_body(i16, SIMD_SINGLE_STRIDE, int16_t,  BMAS_ivech, BMAS_svec,  BMAS_ivech_to_svec_i16);
-cast_to_float_body(i32, SIMD_SINGLE_STRIDE, int32_t,  BMAS_ivec,  BMAS_svec,  BMAS_ivec_to_svec_i32);
-cast_to_float_body(i64, SIMD_DOUBLE_STRIDE, int64_t,  BMAS_ivec,  BMAS_svech, BMAS_ivec_to_svech_i64);
-cast_to_float_body(u8,  SIMD_SINGLE_STRIDE, uint8_t,  BMAS_ivech, BMAS_svec,  BMAS_ivech_to_svec_u8);
-cast_to_float_body(u16, SIMD_SINGLE_STRIDE, uint16_t, BMAS_ivech, BMAS_svec,  BMAS_ivech_to_svec_u16);
-cast_to_float_body(u32, SIMD_DOUBLE_STRIDE, uint32_t, BMAS_ivech, BMAS_svech, BMAS_ivech_to_svec_u32);
-cast_to_float_body(u64, SIMD_DOUBLE_STRIDE, uint64_t, BMAS_ivec,  BMAS_svech, BMAS_ivec_to_svech_u64);
-
-

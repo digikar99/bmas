@@ -97,6 +97,25 @@ void static inline BMAS_ivec_store_multi(
 #include "cast.h"
 #include "copy.h"
 
+
+copy_fn_body(s,     SIMD_SINGLE_STRIDE, float,   BMAS_svec);
+copy_fn_body(d,     SIMD_DOUBLE_STRIDE, double,  BMAS_dvec);
+copy_fn_body(i8,  4*SIMD_SINGLE_STRIDE, int8_t,  BMAS_ivec);
+copy_fn_body(i16, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec);
+copy_fn_body(i32,   SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec);
+copy_fn_body(i64,   SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec);
+
+cast_to_float_body(d,   SIMD_DOUBLE_STRIDE, double,   BMAS_dvec,  BMAS_svech, BMAS_dvec_to_svech);
+cast_to_float_body(i8,  SIMD_SINGLE_STRIDE, int8_t,   BMAS_ivech, BMAS_svec,  BMAS_ivech_to_svec_i8);
+cast_to_float_body(i16, SIMD_SINGLE_STRIDE, int16_t,  BMAS_ivech, BMAS_svec,  BMAS_ivech_to_svec_i16);
+cast_to_float_body(i32, SIMD_SINGLE_STRIDE, int32_t,  BMAS_ivec,  BMAS_svec,  BMAS_ivec_to_svec_i32);
+cast_to_float_body(i64, SIMD_DOUBLE_STRIDE, int64_t,  BMAS_ivec,  BMAS_svech, BMAS_ivec_to_svech_i64);
+cast_to_float_body(u8,  SIMD_SINGLE_STRIDE, uint8_t,  BMAS_ivech, BMAS_svec,  BMAS_ivech_to_svec_u8);
+cast_to_float_body(u16, SIMD_SINGLE_STRIDE, uint16_t, BMAS_ivech, BMAS_svec,  BMAS_ivech_to_svec_u16);
+cast_to_float_body(u32, SIMD_DOUBLE_STRIDE, uint32_t, BMAS_ivech, BMAS_svech, BMAS_ivech_to_svec_u32);
+cast_to_float_body(u64, SIMD_DOUBLE_STRIDE, uint64_t, BMAS_ivec,  BMAS_svech, BMAS_ivec_to_svech_u64);
+
+
 one_arg_fn_body(ssin, SIMD_SINGLE_STRIDE, float, BMAS_svec, float, BMAS_svec);
 one_arg_fn_body(scos, SIMD_SINGLE_STRIDE, float, BMAS_svec, float, BMAS_svec);
 one_arg_fn_body(stan, SIMD_SINGLE_STRIDE, float, BMAS_svec, float, BMAS_svec);
