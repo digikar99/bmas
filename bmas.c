@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 
@@ -274,6 +275,12 @@ two_arg_fn_body(i64mul, SIMD_SINGLE_STRIDE/2, int64_t, BMAS_ivec, int64_t, BMAS_
 two_arg_fn_body(i32mul, SIMD_SINGLE_STRIDE,   int32_t, BMAS_ivec, int32_t, BMAS_ivec);
 two_arg_fn_body(i16mul, SIMD_SINGLE_STRIDE*2, int16_t, BMAS_ivec, int16_t, BMAS_ivec);
 two_arg_fn_body(i8mul,  SIMD_SINGLE_STRIDE*4, int8_t,  BMAS_ivec, int8_t,  BMAS_ivec);
+
+one_arg_fn_body(i64abs, SIMD_SINGLE_STRIDE/2, int64_t, BMAS_ivec, int64_t, BMAS_ivec);
+one_arg_fn_body(i32abs, SIMD_SINGLE_STRIDE,   int32_t, BMAS_ivec, int32_t, BMAS_ivec);
+one_arg_fn_body(i16abs, SIMD_SINGLE_STRIDE*2, int16_t, BMAS_ivec, int16_t, BMAS_ivec);
+one_arg_fn_body(i8abs,  SIMD_SINGLE_STRIDE*4, int8_t,  BMAS_ivec, int8_t,  BMAS_ivec);
+
 
 // Logical Operators
 one_arg_fn_body(i8not,    SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);

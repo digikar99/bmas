@@ -393,6 +393,22 @@ BMAS_ivec static inline BMAS_vector_i8mul (BMAS_ivec a, BMAS_ivec b){
 }
 
 
+BMAS_ivec static inline BMAS_vector_i64abs(BMAS_ivec a){
+  __m256i lt0_mask = _mm256_cmpgt_epi64(_mm256_setzero_si256(), a);
+  // Take 2's complement
+  __m256i max64bit = _mm256_and_si256(lt0_mask,
+                                      _mm256_set_epi64x(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
+                                                        0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF));
+  a = _mm256_sub_epi64(max64bit, a);
+  __m256i singlebit = _mm256_and_si256(lt0_mask,
+                                       _mm256_set_epi64x(0x1,0x1,0x1,0x1));
+  a = _mm256_add_epi64(singlebit, a);
+  return a;
+}
+BMAS_ivec static inline BMAS_vector_i32abs(BMAS_ivec a){return _mm256_abs_epi32(a);}
+BMAS_ivec static inline BMAS_vector_i16abs(BMAS_ivec a){return _mm256_abs_epi16(a);}
+BMAS_ivec static inline BMAS_vector_i8abs (BMAS_ivec a){return _mm256_abs_epi8(a);}
+
 
 
 // float comparison
