@@ -1,4 +1,5 @@
 #include <math.h>
+#include <float.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -96,7 +97,7 @@ void static inline BMAS_ivec_store_multi(
 #include "comparison.h"
 #include "cast.h"
 #include "copy.h"
-#include "sum_fn_body.h"
+#include "one_arg_reduce_fn_body.h"
 #include "dot_fn_body.h"
 
 copy_fn_body(s,     SIMD_SINGLE_STRIDE, float,   BMAS_svec);
@@ -117,19 +118,46 @@ cast_to_float_body(u32, SIMD_DOUBLE_STRIDE, uint32_t, BMAS_ivech, BMAS_svech, BM
 cast_to_float_body(u64, SIMD_DOUBLE_STRIDE, uint64_t, BMAS_ivec,  BMAS_svech, BMAS_ivec_to_svech_u64);
 
 // int8_t can be useful for tasks like counting _Bool elements
-sum_fn_body(ssum,     SIMD_SINGLE_STRIDE, float,   BMAS_svec, float,   szero, sadd, ssum);
-sum_fn_body(dsum,     SIMD_DOUBLE_STRIDE, double,  BMAS_dvec, double,  dzero, dadd, dsum);
-sum_fn_body(i64sum,   SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, int64_t, izero, i64add, i64sum);
-sum_fn_body(i32sum,   SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, int32_t, izero, i32add, i32sum);
-sum_fn_body(i16sum, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, int16_t, izero, i16add, i16sum);
-sum_fn_body(i8sum,  4*SIMD_SINGLE_STRIDE, int8_t,  BMAS_ivec, int8_t,  izero, i8add,  i8sum);
+one_arg_reduce_fn_body(ssum,     SIMD_SINGLE_STRIDE, float,   BMAS_svec, float,   szero, sadd,   shadd);
+one_arg_reduce_fn_body(dsum,     SIMD_DOUBLE_STRIDE, double,  BMAS_dvec, double,  dzero, dadd,   dhadd);
+one_arg_reduce_fn_body(i64sum,   SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, int64_t, izero, i64add, i64hadd);
+one_arg_reduce_fn_body(i32sum,   SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, int32_t, izero, i32add, i32hadd);
+one_arg_reduce_fn_body(i16sum, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, int16_t, izero, i16add, i16hadd);
+one_arg_reduce_fn_body(i8sum,  4*SIMD_SINGLE_STRIDE, int8_t,  BMAS_ivec, int8_t,  izero, i8add,  i8hadd);
 
-dot_fn_body(sdot,     SIMD_SINGLE_STRIDE, float,   BMAS_svec, float,   szero, sadd, smul, ssum);
-dot_fn_body(ddot,     SIMD_DOUBLE_STRIDE, double,  BMAS_dvec, double,  dzero, dadd, dmul, dsum);
-dot_fn_body(i64dot,   SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, int64_t, izero, i64add, i64mul, i64sum);
-dot_fn_body(i32dot,   SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, int32_t, izero, i32add, i32mul, i32sum);
-dot_fn_body(i16dot, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, int16_t, izero, i16add, i16mul, i16sum);
-dot_fn_body(i8dot,  4*SIMD_SINGLE_STRIDE, int8_t,  BMAS_ivec, int8_t,  izero, i8add,  i8mul,  i8sum);
+one_arg_reduce_fn_body(smax,     SIMD_SINGLE_STRIDE, float,    BMAS_svec, float,    sMIN, smax,   shmax);
+one_arg_reduce_fn_body(dmax,     SIMD_DOUBLE_STRIDE, double,   BMAS_dvec, double,   dMIN, dmax,   dhmax);
+one_arg_reduce_fn_body(i64max,   SIMD_DOUBLE_STRIDE, int64_t,  BMAS_ivec, int64_t,  i64MIN, i64max, i64hmax);
+one_arg_reduce_fn_body(i32max,   SIMD_SINGLE_STRIDE, int32_t,  BMAS_ivec, int32_t,  i32MIN, i32max, i32hmax);
+one_arg_reduce_fn_body(i16max, 2*SIMD_SINGLE_STRIDE, int16_t,  BMAS_ivec, int16_t,  i16MIN, i16max, i16hmax);
+one_arg_reduce_fn_body(i8max,  4*SIMD_SINGLE_STRIDE, int8_t,   BMAS_ivec, int8_t,   i8MIN,  i8max,  i8hmax);
+one_arg_reduce_fn_body(u64max,   SIMD_DOUBLE_STRIDE, uint64_t, BMAS_ivec, uint64_t, izero, u64max, u64hmax);
+one_arg_reduce_fn_body(u32max,   SIMD_SINGLE_STRIDE, uint32_t, BMAS_ivec, uint32_t, izero, u32max, u32hmax);
+one_arg_reduce_fn_body(u16max, 2*SIMD_SINGLE_STRIDE, uint16_t, BMAS_ivec, uint16_t, izero, u16max, u16hmax);
+one_arg_reduce_fn_body(u8max,  4*SIMD_SINGLE_STRIDE, uint8_t,  BMAS_ivec, uint8_t,  izero, u8max,  u8hmax);
+
+one_arg_reduce_fn_body(smin,     SIMD_SINGLE_STRIDE, float,    BMAS_svec, float,    sMAX, smin,   shmin);
+one_arg_reduce_fn_body(dmin,     SIMD_DOUBLE_STRIDE, double,   BMAS_dvec, double,   dMAX, dmin,   dhmin);
+one_arg_reduce_fn_body(i64min,   SIMD_DOUBLE_STRIDE, int64_t,  BMAS_ivec, int64_t,  i64MAX, i64min, i64hmin);
+one_arg_reduce_fn_body(i32min,   SIMD_SINGLE_STRIDE, int32_t,  BMAS_ivec, int32_t,  i32MAX, i32min, i32hmin);
+one_arg_reduce_fn_body(i16min, 2*SIMD_SINGLE_STRIDE, int16_t,  BMAS_ivec, int16_t,  i16MAX, i16min, i16hmin);
+one_arg_reduce_fn_body(i8min,  4*SIMD_SINGLE_STRIDE, int8_t,   BMAS_ivec, int8_t,   i8MAX,  i8min,  i8hmin);
+one_arg_reduce_fn_body(u64min,   SIMD_DOUBLE_STRIDE, uint64_t, BMAS_ivec, uint64_t, uMAX, u64min, u64hmin);
+one_arg_reduce_fn_body(u32min,   SIMD_SINGLE_STRIDE, uint32_t, BMAS_ivec, uint32_t, uMAX, u32min, u32hmin);
+one_arg_reduce_fn_body(u16min, 2*SIMD_SINGLE_STRIDE, uint16_t, BMAS_ivec, uint16_t, uMAX, u16min, u16hmin);
+one_arg_reduce_fn_body(u8min,  4*SIMD_SINGLE_STRIDE, uint8_t,  BMAS_ivec, uint8_t,  uMAX, u8min,  u8hmin);
+
+
+dot_fn_body(sdot,     SIMD_SINGLE_STRIDE, float,   BMAS_svec, float,   szero, sadd, smul, shadd);
+dot_fn_body(ddot,     SIMD_DOUBLE_STRIDE, double,  BMAS_dvec, double,  dzero, dadd, dmul, dhadd);
+dot_fn_body(i64dot,   SIMD_DOUBLE_STRIDE, int64_t, BMAS_ivec, int64_t, izero, i64add, i64mul, i64hadd);
+dot_fn_body(i32dot,   SIMD_SINGLE_STRIDE, int32_t, BMAS_ivec, int32_t, izero, i32add, i32mul, i32hadd);
+dot_fn_body(i16dot, 2*SIMD_SINGLE_STRIDE, int16_t, BMAS_ivec, int16_t, izero, i16add, i16mul, i16hadd);
+dot_fn_body(i8dot,  4*SIMD_SINGLE_STRIDE, int8_t,  BMAS_ivec, int8_t,  izero, i8add,  i8mul,  i8hadd);
+dot_fn_body(u64dot,   SIMD_DOUBLE_STRIDE, uint64_t, BMAS_ivec, uint64_t, izero, i64add, u64mul, i64hadd);
+dot_fn_body(u32dot,   SIMD_SINGLE_STRIDE, uint32_t, BMAS_ivec, uint32_t, izero, i32add, u32mul, i32hadd);
+dot_fn_body(u16dot, 2*SIMD_SINGLE_STRIDE, uint16_t, BMAS_ivec, uint16_t, izero, i16add, u16mul, i16hadd);
+dot_fn_body(u8dot,  4*SIMD_SINGLE_STRIDE, uint8_t,  BMAS_ivec, uint8_t,  izero, i8add,  u8mul,  i8hadd);
 
 
 one_arg_fn_body(ssin, SIMD_SINGLE_STRIDE, float, BMAS_svec, float, BMAS_svec);
