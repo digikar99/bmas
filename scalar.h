@@ -32,7 +32,7 @@ uint32_t static inline BMAS_scalar_u32mul(uint32_t a, uint32_t b){return a*b;}
 uint16_t static inline BMAS_scalar_u16mul(uint16_t a, uint16_t b){return a*b;}
 uint8_t  static inline BMAS_scalar_u8mul (uint8_t a,  uint8_t b){return a*b;}
 
-int64_t static inline BMAS_scalar_i64abs(int64_t a){return abs(a);}
+int64_t static inline BMAS_scalar_i64abs(int64_t a){return llabs(a);}
 int32_t static inline BMAS_scalar_i32abs(int32_t a){return abs(a);}
 int16_t static inline BMAS_scalar_i16abs(int16_t a){return abs(a);}
 int8_t  static inline BMAS_scalar_i8abs (int8_t a) {return abs(a);}

@@ -1020,15 +1020,17 @@ BMAS_ivec static inline BMAS_vector_u8mul(BMAS_ivec a, BMAS_ivec b){
 
 BMAS_ivec static inline BMAS_vector_i64abs(BMAS_ivec a){
   __m256i lt0_mask = _mm256_cmpgt_epi64(_mm256_setzero_si256(), a);
-  // Take 2's complement
+  // Take 2's complement of the negative
+  __m256i a_mask   = _mm256_and_si256(lt0_mask, a);
+  __m256i a_unmask = _mm256_andnot_si256(lt0_mask, a);
   __m256i max64bit = _mm256_and_si256(lt0_mask,
                                       _mm256_set_epi64x(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
                                                         0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF));
-  a = _mm256_sub_epi64(max64bit, a);
-  __m256i singlebit = _mm256_and_si256(lt0_mask,
-                                       _mm256_set_epi64x(0x1,0x1,0x1,0x1));
-  a = _mm256_add_epi64(singlebit, a);
-  return a;
+  __m256i a_lt0_inv = _mm256_sub_epi64(max64bit, a_mask);
+  __m256i singlebit = _mm256_and_si256(lt0_mask, _mm256_set_epi64x(1,1,1,1));
+  __m256i a_lt0_abs = _mm256_add_epi64(singlebit, a_lt0_inv);
+  // Merge back after finding the abs
+  return _mm256_or_si256(a_lt0_abs, a_unmask);
 }
 BMAS_ivec static inline BMAS_vector_i32abs(BMAS_ivec a){return _mm256_abs_epi32(a);}
 BMAS_ivec static inline BMAS_vector_i16abs(BMAS_ivec a){return _mm256_abs_epi16(a);}

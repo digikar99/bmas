@@ -31,6 +31,7 @@ The actual computation is done by simd functions from hardware simd instructions
 ### Other notes:
 
 - gcc uses arithmetic shift on signed values and logical shift on unsigned values.
+- `long` has been used as equivalent to 8 bytes; perhaps this will be fixed in the future to account for machine-OS specificity
 
 ## AVX2 Status
 
