@@ -28,6 +28,10 @@ The actual computation is done by simd functions from hardware simd instructions
 
 *Currently, [libmvec](https://github.com/sgallagher/glibc/blob/master/sysdeps/unix/sysv/linux/x86_64/libmvec.abilist) is used for single-float sine and cosine for AVX2, since they were found to be faster than their SLEEF counterparts.
 
+### Other notes:
+
+- gcc uses arithmetic shift on signed values and logical shift on unsigned values.
+
 ## AVX2 Status
 
 SSE and AVX512 support exists to a limited extent due to limited developer time.
@@ -76,6 +80,8 @@ SSE and AVX512 support exists to a limited extent due to limited developer time.
 | or                                 | -       | -       | -     | -     | -     | +    | -      | -      | -      | -     |
 | nor                                | -       | -       | -     | -     | -     | +    | -      | -      | -      | -     |
 | andnot                             | -       | -       | -     | -     | -     | +    | -      | -      | -      | -     |
+| srl                                | -       | -       | -     | -     | -     | -    | +      | +      | +      | +     |
+| sra                                | -       | -       | +     | +     | +     | +    | -      | -      | -      | -     |
 
 
 

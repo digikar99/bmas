@@ -66,6 +66,22 @@ int8_t static inline BMAS_scalar_i8not(int8_t a){return ~a;}
 int8_t static inline BMAS_scalar_i8xor(int8_t a, int8_t b){return a ^ b;}
 int8_t static inline BMAS_scalar_i8andnot(int8_t a, int8_t b){return a & ~b;}
 
+// gcc uses arithmetic shift on signed values and logical shift on unsigned values
+int64_t static inline BMAS_scalar_i64sra(int64_t a, int64_t count){return a >> count;}
+int32_t static inline BMAS_scalar_i32sra(int32_t a, int32_t count){return a >> count;}
+int16_t static inline BMAS_scalar_i16sra(int16_t a, int16_t count){return a >> count;}
+int8_t  static inline BMAS_scalar_i8sra(int8_t a, int8_t count){return a >> count;}
+
+uint64_t static inline BMAS_scalar_u64srl(uint64_t a, uint64_t count){return a >> count;}
+uint32_t static inline BMAS_scalar_u32srl(uint32_t a, uint32_t count){return a >> count;}
+uint16_t static inline BMAS_scalar_u16srl(uint16_t a, uint16_t count){return a >> count;}
+uint8_t  static inline BMAS_scalar_u8srl(uint8_t a, uint8_t count){return a >> count;}
+
+uint64_t static inline BMAS_scalar_u64sll(uint64_t a, uint64_t count){return a << count;}
+uint32_t static inline BMAS_scalar_u32sll(uint32_t a, uint32_t count){return a << count;}
+uint16_t static inline BMAS_scalar_u16sll(uint16_t a, uint16_t count){return a << count;}
+uint8_t  static inline BMAS_scalar_u8sll(uint8_t a, uint8_t count){return a << count;}
+
 
 _Bool static inline BMAS_scalar_slt(float a, float b){return a<b;}
 _Bool static inline BMAS_scalar_sle(float a, float b){return a<=b;}

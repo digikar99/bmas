@@ -291,6 +291,114 @@ BMAS_svech static inline BMAS_ivec_to_svech_u64(BMAS_ivec v){
   return _mm256_cvtpd_ps(BMAS_ivec_to_dvec_u64(v));
 }
 
+// integer scalar bitshift
+
+BMAS_ivec static inline BMAS_vector_i64sra(BMAS_ivec v, BMAS_ivec count){
+  BMAS_ivec lshift    = _mm256_srlv_epi64(v, count); // logical shift
+  BMAS_ivec sign_mask = _mm256_and_si256(v, _mm256_set_epi64x(0x8000000000000000, 0x8000000000000000,
+                                                              0x8000000000000000, 0x8000000000000000));
+  BMAS_ivec result    = _mm256_or_si256(lshift, sign_mask);
+  return result;
+}
+BMAS_ivec static inline BMAS_vector_i32sra(BMAS_ivec v, BMAS_ivec count){return _mm256_srav_epi32(v, count);}
+BMAS_ivec static inline BMAS_vector_i16sra(BMAS_ivec v, BMAS_ivec count){
+  BMAS_ivech v1 = _mm256_extracti128_si256(v, 1);
+  BMAS_ivech v2 = _mm256_castsi256_si128(v);
+  BMAS_ivech c1 = _mm256_extracti128_si256(count, 1);
+  BMAS_ivech c2 = _mm256_castsi256_si128(count);
+  BMAS_ivec v1ex = _mm256_cvtepi16_epi32(v1);
+  BMAS_ivec v2ex = _mm256_cvtepi16_epi32(v2);
+  BMAS_ivec c1ex = _mm256_cvtepi16_epi32(c1);
+  BMAS_ivec c2ex = _mm256_cvtepi16_epi32(c2);
+  BMAS_ivec v1ex_shift = BMAS_vector_i32sra(v1ex, c1ex);
+  BMAS_ivec v2ex_shift = BMAS_vector_i32sra(v2ex, c2ex);
+  BMAS_ivec result_permuted = _mm256_packs_epi32(v1ex_shift, v2ex_shift);
+  BMAS_ivec result = _mm256_permute4x64_epi64(result_permuted, 0b11011000);
+  return result;
+}
+BMAS_ivec static inline BMAS_vector_i8sra(BMAS_ivec v, BMAS_ivec count){
+  BMAS_ivech v1 = _mm256_extracti128_si256(v, 1);
+  BMAS_ivech v2 = _mm256_castsi256_si128(v);
+  BMAS_ivech c1 = _mm256_extracti128_si256(count, 1);
+  BMAS_ivech c2 = _mm256_castsi256_si128(count);
+  BMAS_ivec v1ex = _mm256_cvtepi8_epi16(v1);
+  BMAS_ivec v2ex = _mm256_cvtepi8_epi16(v2);
+  BMAS_ivec c1ex = _mm256_cvtepi8_epi16(c1);
+  BMAS_ivec c2ex = _mm256_cvtepi8_epi16(c2);
+  BMAS_ivec v1ex_shift = BMAS_vector_i16sra(v1ex, c1ex);
+  BMAS_ivec v2ex_shift = BMAS_vector_i16sra(v2ex, c2ex);
+  BMAS_ivec result_permuted = _mm256_packs_epi16(v1ex_shift, v2ex_shift);
+  BMAS_ivec result = _mm256_permute4x64_epi64(result_permuted, 0b11011000);
+  return result;
+}
+
+BMAS_ivec static inline BMAS_vector_u64srl(BMAS_ivec v, BMAS_ivec count){return _mm256_srlv_epi64(v, count);}
+BMAS_ivec static inline BMAS_vector_u32srl(BMAS_ivec v, BMAS_ivec count){return _mm256_srlv_epi32(v, count);}
+BMAS_ivec static inline BMAS_vector_u16srl(BMAS_ivec v, BMAS_ivec count){
+  BMAS_ivech v1 = _mm256_extracti128_si256(v, 1);
+  BMAS_ivech v2 = _mm256_castsi256_si128(v);
+  BMAS_ivech c1 = _mm256_extracti128_si256(count, 1);
+  BMAS_ivech c2 = _mm256_castsi256_si128(count);
+  BMAS_ivec v1ex = _mm256_cvtepi16_epi32(v1);
+  BMAS_ivec v2ex = _mm256_cvtepi16_epi32(v2);
+  BMAS_ivec c1ex = _mm256_cvtepi16_epi32(c1);
+  BMAS_ivec c2ex = _mm256_cvtepi16_epi32(c2);
+  BMAS_ivec v1ex_shift = BMAS_vector_u32srl(v1ex, c1ex);
+  BMAS_ivec v2ex_shift = BMAS_vector_u32srl(v2ex, c2ex);
+  BMAS_ivec result_permuted = _mm256_packs_epi32(v1ex_shift, v2ex_shift);
+  BMAS_ivec result = _mm256_permute4x64_epi64(result_permuted, 0b11011000);
+  return result;
+}
+BMAS_ivec static inline BMAS_vector_u8srl(BMAS_ivec v, BMAS_ivec count){
+  BMAS_ivech v1 = _mm256_extracti128_si256(v, 1);
+  BMAS_ivech v2 = _mm256_castsi256_si128(v);
+  BMAS_ivech c1 = _mm256_extracti128_si256(count, 1);
+  BMAS_ivech c2 = _mm256_castsi256_si128(count);
+  BMAS_ivec v1ex = _mm256_cvtepi8_epi16(v1);
+  BMAS_ivec v2ex = _mm256_cvtepi8_epi16(v2);
+  BMAS_ivec c1ex = _mm256_cvtepi8_epi16(c1);
+  BMAS_ivec c2ex = _mm256_cvtepi8_epi16(c2);
+  BMAS_ivec v1ex_shift = BMAS_vector_u16srl(v1ex, c1ex);
+  BMAS_ivec v2ex_shift = BMAS_vector_u16srl(v2ex, c2ex);
+  BMAS_ivec result_permuted = _mm256_packs_epi16(v1ex_shift, v2ex_shift);
+  BMAS_ivec result = _mm256_permute4x64_epi64(result_permuted, 0b11011000);
+  return result;
+}
+
+BMAS_ivec static inline BMAS_vector_u64sll(BMAS_ivec v, BMAS_ivec count){return _mm256_sllv_epi64(v, count);}
+BMAS_ivec static inline BMAS_vector_u32sll(BMAS_ivec v, BMAS_ivec count){return _mm256_sllv_epi32(v, count);}
+BMAS_ivec static inline BMAS_vector_u16sll(BMAS_ivec v, BMAS_ivec count){
+  BMAS_ivech v1 = _mm256_extracti128_si256(v, 1);
+  BMAS_ivech v2 = _mm256_castsi256_si128(v);
+  BMAS_ivech c1 = _mm256_extracti128_si256(count, 1);
+  BMAS_ivech c2 = _mm256_castsi256_si128(count);
+  BMAS_ivec v1ex = _mm256_cvtepi16_epi32(v1);
+  BMAS_ivec v2ex = _mm256_cvtepi16_epi32(v2);
+  BMAS_ivec c1ex = _mm256_cvtepi16_epi32(c1);
+  BMAS_ivec c2ex = _mm256_cvtepi16_epi32(c2);
+  BMAS_ivec v1ex_shift = BMAS_vector_u32sll(v1ex, c1ex);
+  BMAS_ivec v2ex_shift = BMAS_vector_u32sll(v2ex, c2ex);
+  BMAS_ivec result_permuted = _mm256_packs_epi32(v1ex_shift, v2ex_shift);
+  BMAS_ivec result = _mm256_permute4x64_epi64(result_permuted, 0b11011000);
+  return result;
+}
+BMAS_ivec static inline BMAS_vector_u8sll(BMAS_ivec v, BMAS_ivec count){
+  BMAS_ivech v1 = _mm256_extracti128_si256(v, 1);
+  BMAS_ivech v2 = _mm256_castsi256_si128(v);
+  BMAS_ivech c1 = _mm256_extracti128_si256(count, 1);
+  BMAS_ivech c2 = _mm256_castsi256_si128(count);
+  BMAS_ivec v1ex = _mm256_cvtepi8_epi16(v1);
+  BMAS_ivec v2ex = _mm256_cvtepi8_epi16(v2);
+  BMAS_ivec c1ex = _mm256_cvtepi8_epi16(c1);
+  BMAS_ivec c2ex = _mm256_cvtepi8_epi16(c2);
+  BMAS_ivec v1ex_shift = BMAS_vector_u16sll(v1ex, c1ex);
+  BMAS_ivec v2ex_shift = BMAS_vector_u16sll(v2ex, c2ex);
+  BMAS_ivec result_permuted = _mm256_packs_epi16(v1ex_shift, v2ex_shift);
+  BMAS_ivec result = _mm256_permute4x64_epi64(result_permuted, 0b11011000);
+  return result;
+}
+
+
 // float comparison
 
 // A quick test on numpy will suggest that numpy uses the "ordered" "non-signalling"

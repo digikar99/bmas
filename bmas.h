@@ -266,6 +266,22 @@ two_arg_fn(u32ge, int32_t, int32_t);
 two_arg_fn(u16ge, int16_t, int16_t);
 two_arg_fn(u8ge,  int8_t,  int8_t);
 
+two_arg_fn(i64sra, int64_t, int64_t);
+two_arg_fn(i32sra, int32_t, int32_t);
+two_arg_fn(i16sra, int16_t, int16_t);
+two_arg_fn(i8sra,  int8_t,  int8_t);
+
+two_arg_fn(u64srl, uint64_t, uint64_t);
+two_arg_fn(u32srl, uint32_t, uint32_t);
+two_arg_fn(u16srl, uint16_t, uint16_t);
+two_arg_fn(u8srl,  uint8_t,  uint8_t);
+
+two_arg_fn(u64sll, uint64_t, uint64_t);
+two_arg_fn(u32sll, uint32_t, uint32_t);
+two_arg_fn(u16sll, uint16_t, uint16_t);
+two_arg_fn(u8sll,  uint8_t,  uint8_t);
+
+
 
 void BMAS_i8not(const long N, int8_t* x, const long inc_x, int8_t* out, const long inc_out);
 two_arg_fn(i8and, int8_t, int8_t);

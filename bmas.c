@@ -358,6 +358,23 @@ two_arg_fn_body(i8or,     SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_
 two_arg_fn_body(i8xor,    SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
 two_arg_fn_body(i8andnot, SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
 
+// Bitshift Operators
+
+two_arg_fn_body(i64sra,   SIMD_DOUBLE_STRIDE,   int64_t,  BMAS_ivec, int64_t,  BMAS_ivec);
+two_arg_fn_body(i32sra,   SIMD_SINGLE_STRIDE,   int32_t,  BMAS_ivec, int32_t,  BMAS_ivec);
+two_arg_fn_body(i16sra,   SIMD_SINGLE_STRIDE*2, int16_t,  BMAS_ivec, int16_t,  BMAS_ivec);
+two_arg_fn_body(i8sra,    SIMD_SINGLE_STRIDE*4, int8_t,   BMAS_ivec, int8_t,   BMAS_ivec);
+
+two_arg_fn_body(u64srl,   SIMD_DOUBLE_STRIDE,   uint64_t, BMAS_ivec, uint64_t, BMAS_ivec);
+two_arg_fn_body(u32srl,   SIMD_SINGLE_STRIDE,   uint32_t, BMAS_ivec, uint32_t, BMAS_ivec);
+two_arg_fn_body(u16srl,   SIMD_SINGLE_STRIDE*2, uint16_t, BMAS_ivec, uint16_t, BMAS_ivec);
+two_arg_fn_body(u8srl,    SIMD_SINGLE_STRIDE*4, uint8_t,  BMAS_ivec, uint8_t,  BMAS_ivec);
+
+two_arg_fn_body(u64sll,   SIMD_DOUBLE_STRIDE,   uint64_t, BMAS_ivec, uint64_t, BMAS_ivec);
+two_arg_fn_body(u32sll,   SIMD_SINGLE_STRIDE,   uint32_t, BMAS_ivec, uint32_t, BMAS_ivec);
+two_arg_fn_body(u16sll,   SIMD_SINGLE_STRIDE*2, uint16_t, BMAS_ivec, uint16_t, BMAS_ivec);
+two_arg_fn_body(u8sll,    SIMD_SINGLE_STRIDE*4, uint8_t,  BMAS_ivec, uint8_t,  BMAS_ivec);
+
 
 /* // two_arg_fn_body(copysign); */
 /* // two_arg_fn_body(fmax); */
