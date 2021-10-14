@@ -227,7 +227,7 @@ BMAS_dvec static inline BMAS_ivech_to_dvec_i16(BMAS_ivech v){
 BMAS_dvec static inline BMAS_ivech_to_dvec_i32(BMAS_ivech v){
   return _mm256_cvtepi32_pd(v);
 }
-// Credits for 64-bit conversions: https://stackoverflow.com/questions/41144668/how-to-efficiently-perform-double-int64-conversions-with-sse-avx
+// Credits for 64-bit conversions: user wim from https://stackoverflow.com/a/41223013/8957330
 BMAS_dvec static inline BMAS_ivec_to_dvec_i64(BMAS_ivec v){
   __m256i magic_i_lo   = _mm256_set1_epi64x(0x4330000000000000);
   __m256i magic_i_hi32 = _mm256_set1_epi64x(0x4530000080000000);
@@ -930,7 +930,7 @@ BMAS_ivec static inline BMAS_vector_i16sub(BMAS_ivec a, BMAS_ivec b){return _mm2
 BMAS_ivec static inline BMAS_vector_i8sub (BMAS_ivec a, BMAS_ivec b){return _mm256_sub_epi8(a, b);}
 
 BMAS_ivec static inline BMAS_vector_i64mul(BMAS_ivec a, BMAS_ivec b){
-  // Credits: https://stackoverflow.com/questions/37296289/fastest-way-to-multiply-an-array-of-int64-t
+  // Credits: user Z boson from https://stackoverflow.com/a/37322570/8957330
   __m256i bswap   = _mm256_shuffle_epi32(b,0xB1);           // swap H<->L
   __m256i prodlh  = _mm256_mullo_epi32(a,bswap);            // 32 bit L*H products
   __m256i zero    = _mm256_setzero_si256();                 // 0
