@@ -64,10 +64,12 @@ SSE and AVX512 support exists to a limited extent due to limited developer time.
 | mul                                | +       | +       | +     | +     | +     | +    | +      | +      | +      | +     |
 | div                                | +       | +       | -     | -     | -     | -    | -      | -      | -      | -     |
 | abs (also fabs below)              | -       | -       | +     | +     | +     | +    | -      | -      | -      | -     |
-| sum                                | +       | +       | +     | +     | +     | +    | -      | -      | -      | -     |
 | dot                                | +       | +       | +     | +     | +     | +    | -      | -      | -      | -     |
 | min                                | +       | +       | +     | +     | +     | +    | +      | +      | +      | +     |
 | max                                | +       | +       | +     | +     | +     | +    | +      | +      | +      | +     |
+| sum (horizontal)                   | +       | +       | +     | +     | +     | +    | -      | -      | -      | -     |
+| min (horizontal)                   | +       | +       | +     | +     | +     | +    | +      | +      | +      | +     |
+| max (horizontal)                   | +       | +       | +     | +     | +     | +    | +      | +      | +      | +     |
 | **Function \ Data type**           | float32 | float64 | int64 | int32 | int16 | int8 | uint64 | uint32 | uint16 | uint8 |
 | lt                                 | +       | +       | +     | +     | +     | +    | +      | +      | +      | +     |
 | le                                 | +       | +       | +     | +     | +     | +    | +      | +      | +      | +     |

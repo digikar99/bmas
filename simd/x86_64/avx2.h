@@ -294,10 +294,17 @@ BMAS_svech static inline BMAS_ivec_to_svech_u64(BMAS_ivec v){
 // integer scalar bitshift
 
 BMAS_ivec static inline BMAS_vector_i64sra(BMAS_ivec v, BMAS_ivec count){
-  BMAS_ivec lshift    = _mm256_srlv_epi64(v, count); // logical shift
-  BMAS_ivec sign_mask = _mm256_and_si256(v, _mm256_set_epi64x(0x8000000000000000, 0x8000000000000000,
-                                                              0x8000000000000000, 0x8000000000000000));
-  BMAS_ivec result    = _mm256_or_si256(lshift, sign_mask);
+  BMAS_ivec gt0_shift  = _mm256_srlv_epi64(v, count); // logical shift
+
+  BMAS_ivec identity   = _mm256_cmpeq_epi8(v, v);
+
+  BMAS_ivec lt0_comp   = _mm256_xor_si256(identity, v);
+  BMAS_ivec lt0_shiftc = _mm256_srlv_epi64(lt0_comp, count);
+  BMAS_ivec lt0_shift  = _mm256_xor_si256(identity, lt0_shiftc);
+
+  BMAS_ivec lt0_mask   = _mm256_cmpgt_epi64(_mm256_setzero_si256(), v);
+  BMAS_ivec result = _mm256_or_si256(_mm256_and_si256(lt0_mask, lt0_shift),
+                                     _mm256_andnot_si256(lt0_mask, gt0_shift));
   return result;
 }
 BMAS_ivec static inline BMAS_vector_i32sra(BMAS_ivec v, BMAS_ivec count){return _mm256_srav_epi32(v, count);}
@@ -1132,4 +1139,3 @@ BMAS_dvec static inline BMAS_vector_dceil(BMAS_dvec x)  { return Sleef_ceild4_av
 BMAS_dvec static inline BMAS_vector_dtrunc(BMAS_dvec x) { return Sleef_truncd4_avx2(x);}
 BMAS_dvec static inline BMAS_vector_dfloor(BMAS_dvec x) { return Sleef_floord4_avx2(x);}
 BMAS_dvec static inline BMAS_vector_dround(BMAS_dvec x) { return Sleef_roundd4_avx2(x);}
-

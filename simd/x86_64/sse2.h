@@ -4,6 +4,8 @@ typedef __m128 BMAS_svec;
 typedef __m128d BMAS_dvec;
 typedef __m128 BMAS_sbool;
 typedef __m128d BMAS_dbool;
+typedef __m128i BMAS_ivec;
+typedef __m128i BMAS_ivech;
 
 #define SIMD_SINGLE_STRIDE 4
 #define SIMD_DOUBLE_STRIDE 2
@@ -26,12 +28,15 @@ void static inline BMAS_dvec_store_bool(BMAS_dbool v, _Bool* ptr, const long str
 BMAS_svech static inline BMAS_svech_load(float* ptr){ return _mm_loadu_ps(ptr);}
 void static inline BMAS_svech_store(float* ptr, BMAS_svech v){ return _mm_storeu_ps(ptr, v);}
 
+BMAS_ivec static inline BMAS_ivec_load(void* ptr){ return _mm_loadu_si128((__m128i *)ptr);}
+void static inline BMAS_ivec_store(void* ptr, BMAS_ivec v){_mm_storeu_si128((__m128i *)ptr, v);}
+
 // conversion
 
 BMAS_dvec static inline BMAS_svech_to_dvec(BMAS_svech a){return _mm_cvtps_pd(a);}
 BMAS_svech static inline BMAS_dvec_to_svech(BMAS_dvec a){return _mm_cvtpd_ps(a);}
 
-// basic arithmetic
+// basic float arithmetic
 
 BMAS_svec static inline BMAS_vector_sadd(BMAS_svec a, BMAS_svec b){return _mm_add_ps(a, b);}
 BMAS_svec static inline BMAS_vector_ssub(BMAS_svec a, BMAS_svec b){return _mm_sub_ps(a, b);}
