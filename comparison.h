@@ -25,7 +25,7 @@
         vb = vec##_load(y);                                             \
         vc = BMAS_vector_##name(va, vb);                                \
         vec##_store_boolx1(out, vc);                                    \
-        x += stride;                                                    \
+        x += stride*incx;                                               \
         y += stride;                                                    \
         out += stride;                                                  \
       }                                                                 \
@@ -37,7 +37,7 @@
         vc = BMAS_vector_##name(va, vb);                                \
         vec##_store_boolx1(out, vc);                                    \
         x += stride;                                                    \
-        y += stride;                                                    \
+        y += stride*incy;                                               \
         out += stride;                                                  \
       }                                                                 \
     }else if(incx == 1 && incy == 1){                                   \
@@ -58,8 +58,8 @@
         vb = vec##_make(y, incy, sizeof(type));                         \
         vc = BMAS_vector_##name(va, vb);                                \
         vec##_store_boolx1(out, vc);                                    \
-        x += stride;                                                    \
-        y += stride;                                                    \
+        x += stride*incx;                                               \
+        y += stride*incy;                                               \
         out += stride;                                                  \
       }                                                                 \
     }else if(incy == 1){                                                \
@@ -143,7 +143,7 @@
         vec vb2 = vec##_load(y+stride);                                 \
         vec vc2 = BMAS_vector_##name(va2, vb2);                         \
         vec##_store_boolx2(out, vc1, vc2);                              \
-        x += bool_stride;                                               \
+        x += bool_stride*incx;                                          \
         y += bool_stride;                                               \
         out += bool_stride;                                             \
       }                                                                 \
@@ -159,7 +159,7 @@
         vec vc2 = BMAS_vector_##name(va2, vb2);                         \
         vec##_store_boolx2(out, vc1, vc2);                              \
         x += bool_stride;                                               \
-        y += bool_stride;                                               \
+        y += bool_stride*incy;                                          \
         out += bool_stride;                                             \
       }                                                                 \
     }else if(incx == 1 && incy == 1){                                   \
@@ -180,12 +180,12 @@
         vec va1 = vec##_make(x, incx, sizeof(type));                    \
         vec vb1 = vec##_make(y, incy, sizeof(type));                    \
         vec vc1 = BMAS_vector_##name(va1, vb1);                         \
-        vec va2 = vec##_make(x+stride, incx, sizeof(type));             \
-        vec vb2 = vec##_make(y+stride, incy, sizeof(type));             \
+        vec va2 = vec##_make(x+stride*incx, incx, sizeof(type));        \
+        vec vb2 = vec##_make(y+stride*incy, incy, sizeof(type));        \
         vec vc2 = BMAS_vector_##name(va2, vb2);                         \
         vec##_store_boolx2(out, vc1, vc2);                              \
-        x += bool_stride;                                               \
-        y += bool_stride;                                               \
+        x += bool_stride*incx;                                          \
+        y += bool_stride*incy;                                          \
         out += bool_stride;                                             \
       }                                                                 \
     }else if(incy == 1){                                                \
@@ -271,17 +271,17 @@
         vec va1 = vec##_make(x, incx, sizeof(type));                    \
         vec vb1 = vec##_load(y);                                        \
         vec vc1 = BMAS_vector_##name(va1, vb1);                         \
-        vec va2 = vec##_make(x+stride, incx, sizeof(type));             \
+        vec va2 = vec##_make(x+stride*incx, incx, sizeof(type));        \
         vec vb2 = vec##_load(y+stride);                                 \
         vec vc2 = BMAS_vector_##name(va2, vb2);                         \
-        vec va3 = vec##_make(x+2*stride, incx, sizeof(type));           \
+        vec va3 = vec##_make(x+2*stride*incx, incx, sizeof(type));      \
         vec vb3 = vec##_load(y+2*stride);                               \
         vec vc3 = BMAS_vector_##name(va3, vb3);                         \
-        vec va4 = vec##_make(x+3*stride, incx, sizeof(type));           \
+        vec va4 = vec##_make(x+3*stride*incx, incx, sizeof(type));      \
         vec vb4 = vec##_load(y+3*stride);                               \
         vec vc4 = BMAS_vector_##name(va4, vb4);                         \
         vec##_store_boolx4(out, vc1, vc2, vc3, vc4, sizeof(type));      \
-        x += bool_stride;                                               \
+        x += bool_stride*incx;                                          \
         y += bool_stride;                                               \
         out += bool_stride;                                             \
       }                                                                 \
@@ -293,17 +293,17 @@
         vec vb1 = vec##_make(y, incy, sizeof(type));                    \
         vec vc1 = BMAS_vector_##name(va1, vb1);                         \
         vec va2 = vec##_load(x+stride);                                 \
-        vec vb2 = vec##_make(y+stride, incy, sizeof(type));             \
+        vec vb2 = vec##_make(y+stride*incy, incy, sizeof(type));        \
         vec vc2 = BMAS_vector_##name(va2, vb2);                         \
         vec va3 = vec##_load(x+2*stride);                               \
-        vec vb3 = vec##_make(y+2*stride, incy, sizeof(type));           \
+        vec vb3 = vec##_make(y+2*stride*incy, incy, sizeof(type));      \
         vec vc3 = BMAS_vector_##name(va3, vb3);                         \
         vec va4 = vec##_load(x+3*stride);                               \
-        vec vb4 = vec##_make(y+3*stride, incy, sizeof(type));           \
+        vec vb4 = vec##_make(y+3*stride*incy, incy, sizeof(type));      \
         vec vc4 = BMAS_vector_##name(va4, vb4);                         \
         vec##_store_boolx4(out, vc1, vc2, vc3, vc4, sizeof(type));      \
         x += bool_stride;                                               \
-        y += bool_stride;                                               \
+        y += bool_stride*incy;                                          \
         out += bool_stride;                                             \
       }                                                                 \
     }else if(incx == 1 && incy == 1){                                   \
@@ -324,18 +324,18 @@
         vec va1 = vec##_make(x, incx, sizeof(type));                    \
         vec vb1 = vec##_make(y, incy, sizeof(type));                    \
         vec vc1 = BMAS_vector_##name(va1, vb1);                         \
-        vec va2 = vec##_make(x+stride, incx, sizeof(type));             \
-        vec vb2 = vec##_make(y+stride, incy, sizeof(type));             \
+        vec va2 = vec##_make(x+stride*incx, incx, sizeof(type));        \
+        vec vb2 = vec##_make(y+stride*incy, incy, sizeof(type));        \
         vec vc2 = BMAS_vector_##name(va2, vb2);                         \
-        vec va3 = vec##_make(x+2*stride, incx, sizeof(type));           \
-        vec vb3 = vec##_make(y+2*stride, incy, sizeof(type));           \
+        vec va3 = vec##_make(x+2*stride*incx, incx, sizeof(type));      \
+        vec vb3 = vec##_make(y+2*stride*incy, incy, sizeof(type));      \
         vec vc3 = BMAS_vector_##name(va3, vb3);                         \
-        vec va4 = vec##_make(x+3*stride, incx, sizeof(type));           \
-        vec vb4 = vec##_make(y+3*stride, incy, sizeof(type));           \
+        vec va4 = vec##_make(x+3*stride*incx, incx, sizeof(type));      \
+        vec vb4 = vec##_make(y+3*stride*incy, incy, sizeof(type));      \
         vec vc4 = BMAS_vector_##name(va4, vb4);                         \
         vec##_store_boolx4(out, vc1, vc2, vc3, vc4, sizeof(type));      \
-        x += bool_stride;                                               \
-        y += bool_stride;                                               \
+        x += bool_stride*incx;                                          \
+        y += bool_stride*incy;                                          \
         out += bool_stride;                                             \
       }                                                                 \
     }else if(incy == 1){                                                \
