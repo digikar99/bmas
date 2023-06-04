@@ -686,8 +686,8 @@ BMAS_ivec static inline BMAS_vector_i32min(BMAS_ivec a, BMAS_ivec b){return _mm2
 BMAS_ivec static inline BMAS_vector_i16min(BMAS_ivec a, BMAS_ivec b){return _mm256_min_epi16(a, b);}
 BMAS_ivec static inline BMAS_vector_i8min (BMAS_ivec a, BMAS_ivec b){return _mm256_min_epi8(a, b);}
 BMAS_ivec static inline BMAS_vector_u64min(BMAS_ivec a, BMAS_ivec b){
-  BMAS_ivec asep = _mm256_permutevar8x32_epi32(a, _mm256_set_epi32(8,4,2,0,7,5,3,1));
-  BMAS_ivec bsep = _mm256_permutevar8x32_epi32(b, _mm256_set_epi32(8,4,2,0,7,5,3,1));
+  BMAS_ivec asep = _mm256_permutevar8x32_epi32(a, _mm256_set_epi32(6,4,2,0,7,5,3,1));
+  BMAS_ivec bsep = _mm256_permutevar8x32_epi32(b, _mm256_set_epi32(6,4,2,0,7,5,3,1));
 
   // The upper half needs unsigned comparison, lower half needs unsigned comparison
   BMAS_ivec lt = BMAS_vector_u32gt(bsep, asep);
