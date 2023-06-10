@@ -133,6 +133,9 @@ one_arg_fn(dexp2,  double, double);
 one_arg_fn(dexp10, double, double);
 one_arg_fn(dexpm1, double, double);
 
+one_arg_fn(ssqrt,  float, float);
+one_arg_fn(dsqrt,  double, double);
+
 
 two_arg_fn(spow,   float, float);
 two_arg_fn(satan2, float, float);

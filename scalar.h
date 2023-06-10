@@ -237,5 +237,6 @@ double static inline BMAS_scalar_dtrunc(double x) { return trunc(x);}
 double static inline BMAS_scalar_dfloor(double x) { return floor(x);}
 double static inline BMAS_scalar_dround(double x) { return round(x);}
 
-
+float  static inline BMAS_scalar_ssqrt(float x) { return sqrtf(x); }
+double static inline BMAS_scalar_dsqrt(double x){ return sqrt(x); }
 

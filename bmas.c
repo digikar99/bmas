@@ -232,6 +232,8 @@ one_arg_fn_body(dtrunc, SIMD_DOUBLE_STRIDE, double, BMAS_dvec, double, BMAS_dvec
 one_arg_fn_body(dfloor, SIMD_DOUBLE_STRIDE, double, BMAS_dvec, double, BMAS_dvec);
 one_arg_fn_body(dround, SIMD_DOUBLE_STRIDE, double, BMAS_dvec, double, BMAS_dvec);
 
+one_arg_fn_body(ssqrt, SIMD_SINGLE_STRIDE, float,  BMAS_svec, float,  BMAS_svec);
+one_arg_fn_body(dsqrt, SIMD_DOUBLE_STRIDE, double, BMAS_dvec, double, BMAS_dvec);
 
 
 two_arg_fn_body(spow,   SIMD_SINGLE_STRIDE, float, BMAS_svec, float, BMAS_svec);

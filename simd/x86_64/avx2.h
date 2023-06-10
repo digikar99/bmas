@@ -1139,3 +1139,6 @@ BMAS_dvec static inline BMAS_vector_dceil(BMAS_dvec x)  { return Sleef_ceild4_av
 BMAS_dvec static inline BMAS_vector_dtrunc(BMAS_dvec x) { return Sleef_truncd4_avx2(x);}
 BMAS_dvec static inline BMAS_vector_dfloor(BMAS_dvec x) { return Sleef_floord4_avx2(x);}
 BMAS_dvec static inline BMAS_vector_dround(BMAS_dvec x) { return Sleef_roundd4_avx2(x);}
+
+BMAS_svec static inline BMAS_vector_ssqrt(BMAS_svec x) { return Sleef_sqrtf8_u05avx2(x);}
+BMAS_dvec static inline BMAS_vector_dsqrt(BMAS_dvec x) { return Sleef_sqrtd4_u05avx2(x);}
