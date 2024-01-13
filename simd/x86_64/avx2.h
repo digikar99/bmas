@@ -560,63 +560,16 @@ BMAS_dvec static inline BMAS_vector_ddiv(BMAS_dvec a, BMAS_dvec b){return _mm256
 BMAS_svec static inline BMAS_vector_smax(BMAS_svec a, BMAS_svec b){return _mm256_max_ps(a, b);}
 BMAS_dvec static inline BMAS_vector_dmax(BMAS_dvec a, BMAS_dvec b){return _mm256_max_pd(a, b);}
 BMAS_ivec static inline BMAS_vector_i64max(BMAS_ivec a, BMAS_ivec b){
-  BMAS_ivec asep = _mm256_permutevar8x32_epi32(a, _mm256_set_epi32(6,4,2,0,7,5,3,1));
-  BMAS_ivec bsep = _mm256_permutevar8x32_epi32(b, _mm256_set_epi32(6,4,2,0,7,5,3,1));
-
-  // The upper half needs signed comparison, lower half needs unsigned comparison
-  BMAS_ivech alow = _mm256_extracti128_si256(asep, 1);
-  BMAS_ivech blow = _mm256_extracti128_si256(bsep, 1);
-  BMAS_ivech ahigh = _mm256_castsi256_si128(asep);
-  BMAS_ivech bhigh = _mm256_castsi256_si128(bsep);
-
-  BMAS_ivech gthigh = _mm_cmpgt_epi32(ahigh, bhigh);
-
-  BMAS_ivech fill = _mm_set_epi32(0x80000000, 0x80000000, 0x80000000, 0x80000000);
-  BMAS_ivech alow_epu = _mm_sub_epi32(alow, fill);
-  BMAS_ivech blow_epu = _mm_sub_epi32(blow, fill);
-  BMAS_ivech gtlow  = _mm_cmpgt_epi32(alow_epu, blow_epu);
-  // gthigh == 0 && gtlow == 1 => mask == 1
-  // gthigh == 0 && gtlow == 0 => mask == 0
-  // gthigh == 1 && gtlow == 0 => mask == 1
-  // gthigh == 1 && gtlow == 1 => mask == 1
-  BMAS_ivech mask = _mm_or_si128(gthigh, gtlow);
-  BMAS_ivec fullmask = _mm256_cvtepi32_epi64(mask);
-  BMAS_ivec resulta = _mm256_and_si256(fullmask, a);
-  BMAS_ivec resultb = _mm256_andnot_si256(fullmask, b);
-  BMAS_ivec result = _mm256_or_si256(resulta, resultb);
-
+  BMAS_ivec gtmask = _mm256_cmpgt_epi64(a, b);
+  BMAS_ivec result = _mm256_blendv_epi8(b, a, gtmask);
   return result;
 }
 BMAS_ivec static inline BMAS_vector_i32max(BMAS_ivec a, BMAS_ivec b){return _mm256_max_epi32(a, b);}
 BMAS_ivec static inline BMAS_vector_i16max(BMAS_ivec a, BMAS_ivec b){return _mm256_max_epi16(a, b);}
 BMAS_ivec static inline BMAS_vector_i8max (BMAS_ivec a, BMAS_ivec b){return _mm256_max_epi8(a, b);}
 BMAS_ivec static inline BMAS_vector_u64max(BMAS_ivec a, BMAS_ivec b){
-  BMAS_ivec asep = _mm256_permutevar8x32_epi32(a, _mm256_set_epi32(6,4,2,0,7,5,3,1));
-  BMAS_ivec bsep = _mm256_permutevar8x32_epi32(b, _mm256_set_epi32(6,4,2,0,7,5,3,1));
-
-  BMAS_ivec gt = BMAS_vector_u32gt(asep, bsep);
-
-  // The upper half needs unsigned comparison, lower half needs unsigned comparison
-  /* BMAS_ivech alow = _mm256_extracti128_si256(asep, 1); */
-  /* BMAS_ivech blow = _mm256_extracti128_si256(bsep, 1); */
-  /* BMAS_ivech ahigh = _mm256_castsi256_si128(asep); */
-  /* BMAS_ivech bhigh = _mm256_castsi256_si128(bsep); */
-
-  BMAS_ivech gthigh = _mm256_extracti128_si256(gt, 1);
-  BMAS_ivech gtlow  = _mm256_castsi256_si128(gt);
-
-  /* BMAS_ivech gthigh = _mm_cmpgt_epu32(ahigh, bhigh); */
-  /* BMAS_ivech gtlow  = _mm_cmpgt_epu32(alow, blow); */
-  // gthigh == 0 && gtlow == 1 => mask == 1
-  // gthigh == 0 && gtlow == 0 => mask == 0
-  // gthigh == 1 && gtlow == 0 => mask == 1
-  // gthigh == 1 && gtlow == 1 => mask == 1
-  BMAS_ivech mask = _mm_or_si128(gthigh, gtlow);
-  BMAS_ivec fullmask = _mm256_cvtepi32_epi64(mask);
-  BMAS_ivec resulta = _mm256_and_si256(fullmask, a);
-  BMAS_ivec resultb = _mm256_andnot_si256(fullmask, b);
-  BMAS_ivec result = _mm256_or_si256(resulta, resultb);
-
+  BMAS_ivec gtmask = BMAS_vector_u64gt(a, b);
+  BMAS_ivec result = _mm256_blendv_epi8(b, a, gtmask);
   return result;
 }
 BMAS_ivec static inline BMAS_vector_u32max(BMAS_ivec a, BMAS_ivec b){return _mm256_max_epu32(a, b);}
@@ -626,85 +579,16 @@ BMAS_ivec static inline BMAS_vector_u8max (BMAS_ivec a, BMAS_ivec b){return _mm2
 BMAS_svec static inline BMAS_vector_smin(BMAS_svec a, BMAS_svec b){return _mm256_min_ps(a, b);}
 BMAS_dvec static inline BMAS_vector_dmin(BMAS_dvec a, BMAS_dvec b){return _mm256_min_pd(a, b);}
 BMAS_ivec static inline BMAS_vector_i64min(BMAS_ivec a, BMAS_ivec b){
-  // high bits in the lower 128 bits; low bits in the upper 128 bits
-  BMAS_ivec asep = _mm256_permutevar8x32_epi32(a, _mm256_set_epi32(6,4,2,0,7,5,3,1));
-  BMAS_ivec bsep = _mm256_permutevar8x32_epi32(b, _mm256_set_epi32(6,4,2,0,7,5,3,1));
-
-  // The upper half needs signed comparison, lower half needs unsigned comparison
-  BMAS_ivech alow = _mm256_extracti128_si256(asep, 1);
-  BMAS_ivech blow = _mm256_extracti128_si256(bsep, 1);
-  BMAS_ivech ahigh = _mm256_castsi256_si128(asep);
-  BMAS_ivech bhigh = _mm256_castsi256_si128(bsep);
-
-  BMAS_ivech gthigh = _mm_cmpgt_epi32(ahigh, bhigh);
-
-  /* BMAS_ivech fill = _mm_set_epi32(0x80000000, 0x80000000, 0x80000000, 0x80000000); */
-  /* BMAS_ivech alow_epu = _mm_sub_epi32(alow, fill); */
-  /* BMAS_ivech blow_epu = _mm_sub_epi32(blow, fill); */
-  /* BMAS_ivech gtlow  = _mm_cmpgt_epi32(alow_epu, blow_epu); */
-  BMAS_ivech gtlow = _mm_cmpgt_epi32(alow, blow);
-  // gthigh == 0 && gtlow == 1 => mask == 1
-  // gthigh == 0 && gtlow == 0 => mask == 0
-  // gthigh == 1 && gtlow == 0 => mask == 1
-  // gthigh == 1 && gtlow == 1 => mask == 1
-  BMAS_ivech mask = _mm_or_si128(gthigh, gtlow);
-  BMAS_ivec fullmask = _mm256_cvtepi32_epi64(mask);
-  BMAS_ivec resulta = _mm256_andnot_si256(fullmask, a);
-  BMAS_ivec resultb = _mm256_and_si256(fullmask, b);
-  BMAS_ivec result = _mm256_or_si256(resulta, resultb);
-
+  BMAS_ivec gtmask = _mm256_cmpgt_epi64(a, b);
+  BMAS_ivec result = _mm256_blendv_epi8(a, b, gtmask);
   return result;
-
-  /* BMAS_ivec asep = _mm256_permutevar8x32_epi32(a, _mm256_set_epi32(8,4,2,0,7,5,3,1)); */
-  /* BMAS_ivec bsep = _mm256_permutevar8x32_epi32(b, _mm256_set_epi32(8,4,2,0,7,5,3,1)); */
-
-  /* // The upper half needs signed comparison, lower half needs unsigned comparison */
-  /* BMAS_ivech alow = _mm256_extracti128_si256(asep, 1); */
-  /* BMAS_ivech blow = _mm256_extracti128_si256(bsep, 1); */
-  /* BMAS_ivech ahigh = _mm256_castsi256_si128(asep); */
-  /* BMAS_ivech bhigh = _mm256_castsi256_si128(bsep); */
-
-  /* BMAS_ivech lthigh = _mm_cmpgt_epi32(bhigh, ahigh); */
-
-  /* BMAS_ivech fill = _mm_set_epi32(0x80000000, 0x80000000, 0x80000000, 0x80000000); */
-  /* BMAS_ivech alow_epu = _mm_sub_epi32(alow, fill); */
-  /* BMAS_ivech blow_epu = _mm_sub_epi32(blow, fill); */
-  /* BMAS_ivech ltlow  = _mm_cmpgt_epi32(blow_epu, alow_epu); */
-  /* // lthigh == 0 && ltlow == 1 => mask == 1 */
-  /* // lthigh == 0 && ltlow == 0 => mask == 0 */
-  /* // lthigh == 1 && ltlow == 0 => mask == 1 */
-  /* // lthigh == 1 && ltlow == 1 => mask == 1 */
-  /* BMAS_ivech mask = _mm_or_si128(lthigh, ltlow); */
-  /* BMAS_ivec fullmask = _mm256_cvtepi32_epi64(mask); */
-  /* BMAS_ivec resulta = _mm256_and_si256(a, fullmask); */
-  /* BMAS_ivec resultb = _mm256_andnot_si256(b, fullmask); */
-  /* BMAS_ivec result = _mm256_or_si256(resulta, resultb); */
-
-  /* return result; */
 }
 BMAS_ivec static inline BMAS_vector_i32min(BMAS_ivec a, BMAS_ivec b){return _mm256_min_epi32(a, b);}
 BMAS_ivec static inline BMAS_vector_i16min(BMAS_ivec a, BMAS_ivec b){return _mm256_min_epi16(a, b);}
 BMAS_ivec static inline BMAS_vector_i8min (BMAS_ivec a, BMAS_ivec b){return _mm256_min_epi8(a, b);}
 BMAS_ivec static inline BMAS_vector_u64min(BMAS_ivec a, BMAS_ivec b){
-  BMAS_ivec asep = _mm256_permutevar8x32_epi32(a, _mm256_set_epi32(6,4,2,0,7,5,3,1));
-  BMAS_ivec bsep = _mm256_permutevar8x32_epi32(b, _mm256_set_epi32(6,4,2,0,7,5,3,1));
-
-  // The upper half needs unsigned comparison, lower half needs unsigned comparison
-  BMAS_ivec lt = BMAS_vector_u32gt(bsep, asep);
-
-  BMAS_ivech lthigh = _mm256_extracti128_si256(lt, 1);
-  BMAS_ivech ltlow  = _mm256_castsi256_si128(lt);
-
-  // lthigh == 0 && ltlow == 1 => mask == 1
-  // lthigh == 0 && ltlow == 0 => mask == 0
-  // lthigh == 1 && ltlow == 0 => mask == 1
-  // lthigh == 1 && ltlow == 1 => mask == 1
-  BMAS_ivech mask = _mm_or_si128(lthigh, ltlow);
-  BMAS_ivec fullmask = _mm256_cvtepi32_epi64(mask);
-  BMAS_ivec resulta = _mm256_and_si256(fullmask, a);
-  BMAS_ivec resultb = _mm256_andnot_si256(fullmask, b);
-  BMAS_ivec result = _mm256_or_si256(resulta, resultb);
-
+  BMAS_ivec gtmask = BMAS_vector_u64gt(a, b);
+  BMAS_ivec result = _mm256_blendv_epi8(a, b, gtmask);
   return result;
 }
 BMAS_ivec static inline BMAS_vector_u32min(BMAS_ivec a, BMAS_ivec b){return _mm256_min_epu32(a, b);}
