@@ -98,6 +98,7 @@ void static inline BMAS_ivec_store_multi(
 #include "cast.h"
 #include "copy.h"
 #include "one_arg_reduce_fn_body.h"
+#include "one_arg_ireduce_fn_body.h"
 #include "dot_fn_body.h"
 
 copy_fn_body(s,     SIMD_SINGLE_STRIDE, float,   BMAS_svec);
@@ -146,6 +147,28 @@ one_arg_reduce_fn_body(u64hmin,   SIMD_DOUBLE_STRIDE, uint64_t, BMAS_ivec, uint6
 one_arg_reduce_fn_body(u32hmin,   SIMD_SINGLE_STRIDE, uint32_t, BMAS_ivec, uint32_t, uMAX, u32min, u32hmin);
 one_arg_reduce_fn_body(u16hmin, 2*SIMD_SINGLE_STRIDE, uint16_t, BMAS_ivec, uint16_t, uMAX, u16min, u16hmin);
 one_arg_reduce_fn_body(u8hmin,  4*SIMD_SINGLE_STRIDE, uint8_t,  BMAS_ivec, uint8_t,  uMAX, u8min,  u8hmin);
+
+one_arg_ireduce_fn_body(shimax,     SIMD_SINGLE_STRIDE, float,    svec, sINDEX, sMIN,   sindex,   shindex,   'a', sgt);
+one_arg_ireduce_fn_body(dhimax,     SIMD_DOUBLE_STRIDE, double,   dvec, dINDEX, dMIN,   dindex,   dhindex,   'a', dgt);
+one_arg_ireduce_fn_body(i64himax,   SIMD_DOUBLE_STRIDE, int64_t,  ivec, iINDEX, i64MIN, i64index, i64hindex, 'a', i64gt);
+one_arg_ireduce_fn_body(i32himax,   SIMD_SINGLE_STRIDE, int32_t,  ivec, iINDEX, i32MIN, i32index, i32hindex, 'a', i32gt);
+one_arg_ireduce_fn_body(i16himax, 2*SIMD_SINGLE_STRIDE, int16_t,  ivec, iINDEX, i16MIN, i16index, i16hindex, 'a', i16gt);
+one_arg_ireduce_fn_body(i8himax,  4*SIMD_SINGLE_STRIDE, int8_t,   ivec, iINDEX, i8MIN,  i8index,  i8hindex,  'a', i8gt);
+one_arg_ireduce_fn_body(u64himax,   SIMD_DOUBLE_STRIDE, uint64_t, ivec, iINDEX, uMIN,   u64index, u64hindex, 'a', u64gt);
+one_arg_ireduce_fn_body(u32himax,   SIMD_SINGLE_STRIDE, uint32_t, ivec, iINDEX, uMIN,   u32index, u32hindex, 'a', u32gt);
+one_arg_ireduce_fn_body(u16himax, 2*SIMD_SINGLE_STRIDE, uint16_t, ivec, iINDEX, uMIN,   u16index, u16hindex, 'a', u16gt);
+one_arg_ireduce_fn_body(u8himax,  4*SIMD_SINGLE_STRIDE, uint8_t,  ivec, iINDEX, uMIN,   u8index,  u8hindex,  'a', u8gt);
+
+one_arg_ireduce_fn_body(shimin,     SIMD_SINGLE_STRIDE, float,    svec, sINDEX, sMAX,   sindex,   shindex,   'i', slt);
+one_arg_ireduce_fn_body(dhimin,     SIMD_DOUBLE_STRIDE, double,   dvec, dINDEX, dMAX,   dindex,   dhindex,   'i', dlt);
+one_arg_ireduce_fn_body(i64himin,   SIMD_DOUBLE_STRIDE, int64_t,  ivec, iINDEX, i64MAX, i64index, i64hindex, 'i', i64lt);
+one_arg_ireduce_fn_body(i32himin,   SIMD_SINGLE_STRIDE, int32_t,  ivec, iINDEX, i32MAX, i32index, i32hindex, 'i', i32lt);
+one_arg_ireduce_fn_body(i16himin, 2*SIMD_SINGLE_STRIDE, int16_t,  ivec, iINDEX, i16MAX, i16index, i16hindex, 'i', i16lt);
+one_arg_ireduce_fn_body(i8himin,  4*SIMD_SINGLE_STRIDE, int8_t,   ivec, iINDEX, i8MAX,  i8index,  i8hindex,  'i', i8lt);
+one_arg_ireduce_fn_body(u64himin,   SIMD_DOUBLE_STRIDE, uint64_t, ivec, iINDEX, uMAX,   u64index, u64hindex, 'i', u64lt);
+one_arg_ireduce_fn_body(u32himin,   SIMD_SINGLE_STRIDE, uint32_t, ivec, iINDEX, uMAX,   u32index, u32hindex, 'i', u32lt);
+one_arg_ireduce_fn_body(u16himin, 2*SIMD_SINGLE_STRIDE, uint16_t, ivec, iINDEX, uMAX,   u16index, u16hindex, 'i', u16lt);
+one_arg_ireduce_fn_body(u8himin,  4*SIMD_SINGLE_STRIDE, uint8_t,  ivec, iINDEX, uMAX,   u8index,  u8hindex,  'i', u8lt);
 
 
 dot_fn_body(sdot,     SIMD_SINGLE_STRIDE, float,   BMAS_svec, float,   szero, sadd, smul, shadd);

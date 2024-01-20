@@ -353,6 +353,28 @@ one_arg_reduce_fn(u16hmin, uint16_t, uint16_t);
 one_arg_reduce_fn(u32hmin, uint32_t, uint32_t);
 one_arg_reduce_fn(u64hmin, uint64_t, uint64_t);
 
+#define one_arg_ireduce_fn(name, itype, otype) long BMAS_##name(const long n, itype* x, const int64_t incx);
+one_arg_ireduce_fn(shimax, float, float);
+one_arg_ireduce_fn(dhimax, double, double);
+one_arg_ireduce_fn(i8himax,  int8_t,  int8_t);
+one_arg_ireduce_fn(i16himax, int16_t, int16_t);
+one_arg_ireduce_fn(i32himax, int32_t, int32_t);
+one_arg_ireduce_fn(i64himax, int64_t, int64_t);
+one_arg_ireduce_fn(u8himax,  uint8_t,  uint8_t);
+one_arg_ireduce_fn(u16himax, uint16_t, uint16_t);
+one_arg_ireduce_fn(u32himax, uint32_t, uint32_t);
+one_arg_ireduce_fn(u64himax, uint64_t, uint64_t);
+
+one_arg_ireduce_fn(shimin, float, float);
+one_arg_ireduce_fn(dhimin, double, double);
+one_arg_ireduce_fn(i8himin,  int8_t,  int8_t);
+one_arg_ireduce_fn(i16himin, int16_t, int16_t);
+one_arg_ireduce_fn(i32himin, int32_t, int32_t);
+one_arg_ireduce_fn(i64himin, int64_t, int64_t);
+one_arg_ireduce_fn(u8himin,  uint8_t,  uint8_t);
+one_arg_ireduce_fn(u16himin, uint16_t, uint16_t);
+one_arg_ireduce_fn(u32himin, uint32_t, uint32_t);
+one_arg_ireduce_fn(u64himin, uint64_t, uint64_t);
 
 #define dot_fn(name, itype, otype) \
   otype BMAS_##name(const long n,\

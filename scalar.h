@@ -1,6 +1,17 @@
 #include <math.h>
 #include "sleefinline_purec_scalar.h"
 
+struct BMAS_ipair_float{long idx; float value;};
+struct BMAS_ipair_double{long idx; double value;};
+struct BMAS_ipair_int64_t{long idx; int64_t value;};
+struct BMAS_ipair_int32_t{long idx; int32_t value;};
+struct BMAS_ipair_int16_t{long idx; int16_t value;};
+struct BMAS_ipair_int8_t {long idx; int8_t value;};
+struct BMAS_ipair_uint64_t{long idx; uint64_t value;};
+struct BMAS_ipair_uint32_t{long idx; uint32_t value;};
+struct BMAS_ipair_uint16_t{long idx; uint16_t value;};
+struct BMAS_ipair_uint8_t {long idx; uint8_t value;};
+
 float static inline BMAS_scalar_sadd(float a, float b){return a+b;}
 float static inline BMAS_scalar_ssub(float a, float b){return a-b;}
 float static inline BMAS_scalar_smul(float a, float b){return a*b;}

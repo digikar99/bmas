@@ -8,6 +8,20 @@ typedef __m256d BMAS_dbool;
 typedef __m256i BMAS_ivec;
 typedef __m128i BMAS_ivech;
 
+struct BMAS_ipair_svec{
+  BMAS_svec value;
+  BMAS_ivec base_idx_low;
+  BMAS_ivec base_idx_high;
+};
+struct BMAS_ipair_dvec{
+  BMAS_dvec value;
+  BMAS_ivec base_idx;
+};
+struct BMAS_ipair_ivec{
+  BMAS_ivec value;
+  BMAS_ivec base_idx[8];
+};
+
 #define SIMD_SINGLE_STRIDE 8
 #define SIMD_DOUBLE_STRIDE 4
 
@@ -48,6 +62,28 @@ BMAS_ivec static inline BMAS_vector_i8MAX(){
 BMAS_ivec static inline BMAS_vector_uMAX(){
   return _mm256_set1_epi64x(0xffffffffffffffff);
 }
+
+struct BMAS_ipair_svec static inline BMAS_vector_sINDEX(BMAS_svec init){
+  struct BMAS_ipair_svec res = {
+    init,
+    _mm256_set1_epi64x(0),
+    _mm256_set1_epi64x(0)
+  };
+  return res;
+}
+struct BMAS_ipair_dvec static inline BMAS_vector_dINDEX(BMAS_dvec init){
+  struct BMAS_ipair_dvec res = {init, _mm256_set1_epi64x(0)};
+  return res;
+}
+struct BMAS_ipair_ivec static inline BMAS_vector_iINDEX(BMAS_ivec init){
+  struct BMAS_ipair_ivec res = {
+    init,
+    _mm256_setzero_si256(), _mm256_setzero_si256(),
+    _mm256_setzero_si256(), _mm256_setzero_si256(),
+    _mm256_setzero_si256(), _mm256_setzero_si256(),
+    _mm256_setzero_si256(), _mm256_setzero_si256()
+  };
+  return res;
 }
 
 // store-load
@@ -905,6 +941,680 @@ BMAS_ivec static inline BMAS_vector_i32abs(BMAS_ivec a){return _mm256_abs_epi32(
 BMAS_ivec static inline BMAS_vector_i16abs(BMAS_ivec a){return _mm256_abs_epi16(a);}
 BMAS_ivec static inline BMAS_vector_i8abs (BMAS_ivec a){return _mm256_abs_epi8(a);}
 
+struct BMAS_ipair_svec static inline BMAS_vector_sindex(
+  const struct BMAS_ipair_svec old, BMAS_svec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_svec res;
+  if (max_or_min == 'a'){
+    res.value = _mm256_max_ps(old.value, new);
+  }else if (max_or_min == 'i'){
+    res.value = _mm256_min_ps(old.value, new);
+  }
+  __m256 cmp_res = _mm256_cmp_ps(res.value, new, _CMP_EQ_OQ);
+  int mask = _mm256_movemask_ps(cmp_res);
+  if (mask == 0){
+    res.base_idx_low = old.base_idx_low;
+    res.base_idx_high = old.base_idx_high;
+  }else{
+    __m256i cmp256 = (__m256i)cmp_res;
+    cmp256 = _mm256_permute4x64_epi64(cmp256, 0b11011000);
+    __m256i cmp256low  = _mm256_unpacklo_epi32(cmp256, cmp256);
+    __m256i cmp256high = _mm256_unpackhi_epi32(cmp256, cmp256);
+    res.base_idx_low = _mm256_blendv_epi8(
+      old.base_idx_low,
+      _mm256_set1_epi64x(base_idx),
+      cmp256low
+      );
+    res.base_idx_high = _mm256_blendv_epi8(
+      old.base_idx_high,
+      _mm256_set1_epi64x(base_idx),
+      cmp256high
+      );
+  }
+  return res;
+}
+struct BMAS_ipair_float static inline BMAS_vector_shindex(
+  struct BMAS_ipair_svec x, const char max_or_min){
+  float fm;
+  if (max_or_min == 'a') fm = -FLT_MAX;
+  else if (max_or_min == 'i') fm = FLT_MAX;
+  long idx = -1;
+  for(int i=0; i<SIMD_DOUBLE_STRIDE; i++){
+    if ((max_or_min == 'a' && x.value[i] > fm)
+        || (max_or_min == 'i' && x.value[i] < fm)){
+      fm = x.value[i];
+      switch(i){
+      case 0: idx = (long)_mm256_extract_epi64(x.base_idx_low, 0); break;
+      case 1: idx = (long)_mm256_extract_epi64(x.base_idx_low, 1); break;
+      case 2: idx = (long)_mm256_extract_epi64(x.base_idx_low, 2); break;
+      case 3: idx = (long)_mm256_extract_epi64(x.base_idx_low, 3); break;
+      }
+      idx += i;
+    }
+  }
+  for(int i=SIMD_DOUBLE_STRIDE; i<2*SIMD_DOUBLE_STRIDE; i++){
+    if ((max_or_min == 'a' && x.value[i] > fm)
+        || (max_or_min == 'i' && x.value[i] < fm)){
+      fm = x.value[i];
+      switch(i){
+      case 4: idx = (long)_mm256_extract_epi64(x.base_idx_high, 0); break;
+      case 5: idx = (long)_mm256_extract_epi64(x.base_idx_high, 1); break;
+      case 6: idx = (long)_mm256_extract_epi64(x.base_idx_high, 2); break;
+      case 7: idx = (long)_mm256_extract_epi64(x.base_idx_high, 3); break;
+      }
+      idx += i;
+    }
+  }
+  struct BMAS_ipair_float res = {idx, fm};
+  return res;
+}
+struct BMAS_ipair_dvec static inline BMAS_vector_dindex(
+  const struct BMAS_ipair_dvec old, BMAS_dvec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_dvec res;
+  if (max_or_min == 'a'){
+    res.value = _mm256_max_pd(old.value, new);
+  }else if (max_or_min == 'i'){
+    res.value = _mm256_min_pd(old.value, new);
+  }
+  __m256i cmp256 = (__m256i)_mm256_cmp_pd(res.value, new, _CMP_EQ_OQ);
+  res.base_idx = _mm256_blendv_epi8(
+    old.base_idx,
+    _mm256_set1_epi64x(base_idx),
+    cmp256
+    );
+  return res;
+}
+struct BMAS_ipair_double static inline BMAS_vector_dhindex(
+  const struct BMAS_ipair_dvec x, const char max_or_min){
+  double dm;
+  if (max_or_min == 'a') dm = -DBL_MAX;
+  else if (max_or_min == 'i') dm = DBL_MAX;
+  long idx = -1;
+  for(int i=0; i<SIMD_DOUBLE_STRIDE; i++){
+    if ((max_or_min == 'a' && x.value[i] > dm)
+        || (max_or_min == 'i' && x.value[i] < dm)){
+      dm = x.value[i];
+      switch(i){
+      case 0: idx = _mm256_extract_epi64(x.base_idx, 0); break;
+      case 1: idx = _mm256_extract_epi64(x.base_idx, 1); break;
+      case 2: idx = _mm256_extract_epi64(x.base_idx, 2); break;
+      case 3: idx = _mm256_extract_epi64(x.base_idx, 3); break;
+      }
+      idx += i;
+    }
+  }
+  struct BMAS_ipair_double res = {idx, dm};
+  return res;
+}
+struct BMAS_ipair_ivec static inline BMAS_vector_i64index(
+  const struct BMAS_ipair_ivec old, BMAS_ivec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_ivec res;
+  switch(max_or_min){
+  case 'a': res.value = BMAS_vector_i64max(old.value, new); break;
+  case 'i': res.value = BMAS_vector_i64min(old.value, new); break;
+  }
+  __m256i cmp256 = _mm256_cmpeq_epi64(res.value, new);
+  res.base_idx[0] = _mm256_blendv_epi8(
+    old.base_idx[0],
+    _mm256_set1_epi64x(base_idx),
+    cmp256
+    );
+  return res;
+}
+struct BMAS_ipair_int64_t static inline BMAS_vector_i64hindex(
+  const struct BMAS_ipair_ivec x, const char max_or_min){
+  int64_t m;
+  switch(max_or_min){
+  case 'a': m = 1UL << 63;  break;
+  case 'i': m = 0x8fffffff; break;
+  }
+  long idx = -1;
+  for(int i=0; i<SIMD_DOUBLE_STRIDE; i++){
+    if ((max_or_min == 'a' && x.value[i] > m)
+        || (max_or_min == 'i' && x.value[i] < m)){
+      m = x.value[i];
+      switch(i){
+      case 0: idx = _mm256_extract_epi64(x.base_idx[0], 0); break;
+      case 1: idx = _mm256_extract_epi64(x.base_idx[0], 1); break;
+      case 2: idx = _mm256_extract_epi64(x.base_idx[0], 2); break;
+      case 3: idx = _mm256_extract_epi64(x.base_idx[0], 3); break;
+      }
+      idx += i;
+    }
+  }
+  struct BMAS_ipair_int64_t res = {idx, m};
+  return res;
+}
+struct BMAS_ipair_ivec static inline BMAS_vector_i32index(
+  const struct BMAS_ipair_ivec old, BMAS_ivec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_ivec res;
+  switch(max_or_min){
+  case 'a': res.value = BMAS_vector_i32max(old.value, new); break;
+  case 'i': res.value = BMAS_vector_i32min(old.value, new); break;
+  }
+  __m256i cmp256 = _mm256_cmpeq_epi32(res.value, new);
+  int mask = _mm256_movemask_epi8(cmp256);
+  if (mask == 0){
+    res.base_idx[0] = old.base_idx[0];
+    res.base_idx[1] = old.base_idx[1];
+  }else{
+    cmp256 = _mm256_permute4x64_epi64(cmp256, 0b11011000);
+    __m256i cmp256low  = _mm256_unpacklo_epi32(cmp256, cmp256);
+    __m256i cmp256high = _mm256_unpackhi_epi32(cmp256, cmp256);
+    res.base_idx[0] = _mm256_blendv_epi8(
+      old.base_idx[0],
+      _mm256_set1_epi64x(base_idx),
+      cmp256low
+      );
+    res.base_idx[1] = _mm256_blendv_epi8(
+      old.base_idx[1],
+      _mm256_set1_epi64x(base_idx),
+      cmp256high
+      );
+  }
+  return res;
+}
+struct BMAS_ipair_int32_t static inline BMAS_vector_i32hindex(
+  const struct BMAS_ipair_ivec x, const char max_or_min){
+  int32_t m;
+  switch(max_or_min){
+  case 'a': m = 1UL << 31; break;
+  case 'i': m = 0x8fff;    break;
+  }
+  long idx = -1;
+
+  int32_t v;
+#define V_EXTRACT32_MAX_AND_SETM(I)                                     \
+  v = _mm256_extract_epi32(x.value, I);                                 \
+  if (v>m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+#define V_EXTRACT32_MIN_AND_SETM(I)                                     \
+  v = _mm256_extract_epi32(x.value, I);                                 \
+  if (v<m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+
+  if (max_or_min == 'a'){
+    MACRO_LOOP(8, V_EXTRACT32_MAX_AND_SETM);
+  }else if (max_or_min == 'i'){
+    MACRO_LOOP(8, V_EXTRACT32_MIN_AND_SETM);
+  }
+
+#undef V_EXTRACT32_MIN_AND_SETM
+#undef V_EXTRACT32_MAX_AND_SETM
+  struct BMAS_ipair_int32_t res = {idx, m};
+  return res;
+}
+
+struct BMAS_ipair_ivec static inline BMAS_vector_i16index(
+  const struct BMAS_ipair_ivec old, BMAS_ivec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_ivec res;
+  switch(max_or_min){
+  case 'a': res.value = BMAS_vector_i16max(old.value, new); break;
+  case 'i': res.value = BMAS_vector_i16min(old.value, new); break;
+  }
+  __m256i cmp256 = _mm256_cmpeq_epi16(res.value, new);
+  cmp256 = _mm256_permute4x64_epi64(cmp256, 0b11011000);
+  __m256i cmp256_0 = _mm256_unpacklo_epi16(cmp256, cmp256);
+  __m256i cmp256_1 = _mm256_unpackhi_epi16(cmp256, cmp256);
+
+  cmp256_0 = _mm256_permute4x64_epi64(cmp256_0, 0b11011000);
+  __m256i cmp256_00 = _mm256_unpacklo_epi32(cmp256_0, cmp256_0);
+  __m256i cmp256_01 = _mm256_unpackhi_epi32(cmp256_0, cmp256_0);
+
+  cmp256_1 = _mm256_permute4x64_epi64(cmp256_1, 0b11011000);
+  __m256i cmp256_10 = _mm256_unpacklo_epi32(cmp256_1, cmp256_1);
+  __m256i cmp256_11 = _mm256_unpackhi_epi32(cmp256_1, cmp256_1);
+
+  res.base_idx[0] = _mm256_blendv_epi8(
+    old.base_idx[0],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_00
+    );
+  res.base_idx[1] = _mm256_blendv_epi8(
+    old.base_idx[1],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_01
+    );
+  res.base_idx[2] = _mm256_blendv_epi8(
+    old.base_idx[2],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_10
+    );
+  res.base_idx[3] = _mm256_blendv_epi8(
+    old.base_idx[3],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_11
+    );
+
+  return res;
+}
+struct BMAS_ipair_int16_t static inline BMAS_vector_i16hindex(
+  const struct BMAS_ipair_ivec x, const char max_or_min){
+  int16_t m;
+  switch(max_or_min){
+  case 'a': m = 1UL << 15; break;
+  case 'i': m = 0x8f;    break;
+  }
+  long idx = -1;
+
+  int16_t v;
+#define V_EXTRACT16_MAX_AND_SETM(I)                                     \
+  v = _mm256_extract_epi16(x.value, I);                                 \
+  if (v>m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+#define V_EXTRACT16_MIN_AND_SETM(I)                                     \
+  v = _mm256_extract_epi16(x.value, I);                                 \
+  if (v<m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+
+  if (max_or_min == 'a'){
+    MACRO_LOOP(16, V_EXTRACT16_MAX_AND_SETM);
+  }else if (max_or_min == 'i'){
+    MACRO_LOOP(16, V_EXTRACT16_MIN_AND_SETM);
+  }
+
+#undef V_EXTRACT16_MIN_AND_SETM
+#undef V_EXTRACT16_MAX_AND_SETM
+  struct BMAS_ipair_int16_t res = {idx, m};
+  return res;
+}
+
+struct BMAS_ipair_ivec static inline BMAS_vector_i8index(
+  const struct BMAS_ipair_ivec old, BMAS_ivec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_ivec res;
+  switch(max_or_min){
+  case 'a': res.value = BMAS_vector_i8max(old.value, new); break;
+  case 'i': res.value = BMAS_vector_i8min(old.value, new); break;
+  }
+
+  // expand 8 cmp bits to 16 bits
+  __m256i cmp256 = _mm256_cmpeq_epi8(res.value, new);
+  cmp256 = _mm256_permute4x64_epi64(cmp256, 0b11011000);
+  __m256i cmp256_0 = _mm256_unpacklo_epi8(cmp256, cmp256);
+  __m256i cmp256_1 = _mm256_unpackhi_epi8(cmp256, cmp256);
+
+  // expand 16 cmp bits to 32 bits
+  cmp256_0 = _mm256_permute4x64_epi64(cmp256_0, 0b11011000);
+  __m256i cmp256_00 = _mm256_unpacklo_epi16(cmp256_0, cmp256_0);
+  __m256i cmp256_01 = _mm256_unpackhi_epi16(cmp256_0, cmp256_0);
+
+  cmp256_1 = _mm256_permute4x64_epi64(cmp256_1, 0b11011000);
+  __m256i cmp256_10 = _mm256_unpacklo_epi16(cmp256_1, cmp256_1);
+  __m256i cmp256_11 = _mm256_unpackhi_epi16(cmp256_1, cmp256_1);
+
+  // expand 32 cmp bits to 64 bits
+  cmp256_00 = _mm256_permute4x64_epi64(cmp256_00, 0b11011000);
+  __m256i cmp256_000 = _mm256_unpacklo_epi32(cmp256_00, cmp256_00);
+  __m256i cmp256_001 = _mm256_unpackhi_epi32(cmp256_00, cmp256_00);
+
+  cmp256_01 = _mm256_permute4x64_epi64(cmp256_01, 0b11011000);
+  __m256i cmp256_010 = _mm256_unpacklo_epi32(cmp256_01, cmp256_01);
+  __m256i cmp256_011 = _mm256_unpackhi_epi32(cmp256_01, cmp256_01);
+
+  cmp256_10 = _mm256_permute4x64_epi64(cmp256_10, 0b11011000);
+  __m256i cmp256_100 = _mm256_unpacklo_epi32(cmp256_10, cmp256_10);
+  __m256i cmp256_101 = _mm256_unpackhi_epi32(cmp256_10, cmp256_10);
+
+  cmp256_11 = _mm256_permute4x64_epi64(cmp256_11, 0b11011000);
+  __m256i cmp256_110 = _mm256_unpacklo_epi32(cmp256_11, cmp256_11);
+  __m256i cmp256_111 = _mm256_unpackhi_epi32(cmp256_11, cmp256_11);
+
+  res.base_idx[0] = _mm256_blendv_epi8(
+    old.base_idx[0],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_000
+    );
+  res.base_idx[1] = _mm256_blendv_epi8(
+    old.base_idx[1],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_001
+    );
+  res.base_idx[2] = _mm256_blendv_epi8(
+    old.base_idx[2],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_010
+    );
+  res.base_idx[3] = _mm256_blendv_epi8(
+    old.base_idx[3],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_011
+    );
+  res.base_idx[4] = _mm256_blendv_epi8(
+    old.base_idx[4],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_100
+    );
+  res.base_idx[5] = _mm256_blendv_epi8(
+    old.base_idx[5],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_101
+    );
+  res.base_idx[6] = _mm256_blendv_epi8(
+    old.base_idx[6],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_110
+    );
+  res.base_idx[7] = _mm256_blendv_epi8(
+    old.base_idx[7],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_111
+    );
+  return res;
+}
+struct BMAS_ipair_int8_t static inline BMAS_vector_i8hindex(
+  const struct BMAS_ipair_ivec x, const char max_or_min){
+  int8_t m;
+  switch(max_or_min){
+  case 'a': m = 1UL << 7; break;
+  case 'i': m = 0x8;      break;
+  }
+  long idx = -1;
+
+  int8_t v;
+#define V_EXTRACT8_MAX_AND_SETM(I)                                     \
+  v = _mm256_extract_epi8(x.value, I);                                 \
+  if (v>m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+#define V_EXTRACT8_MIN_AND_SETM(I)                                     \
+  v = _mm256_extract_epi8(x.value, I);                                 \
+  if (v<m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+
+  if (max_or_min == 'a'){
+    MACRO_LOOP(32, V_EXTRACT8_MAX_AND_SETM);
+  }else if (max_or_min == 'i'){
+    MACRO_LOOP(32, V_EXTRACT8_MIN_AND_SETM);
+  }
+
+#undef V_EXTRACT8_MIN_AND_SETM
+#undef V_EXTRACT8_MAX_AND_SETM
+  struct BMAS_ipair_int8_t res = {idx, m};
+  return res;
+}
+
+
+struct BMAS_ipair_ivec static inline BMAS_vector_u64index(
+  const struct BMAS_ipair_ivec old, BMAS_ivec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_ivec res;
+  switch(max_or_min){
+  case 'a': res.value = BMAS_vector_u64max(old.value, new); break;
+  case 'i': res.value = BMAS_vector_u64min(old.value, new); break;
+  }
+  __m256i cmp256 = _mm256_cmpeq_epi64(res.value, new);
+  res.base_idx[0] = _mm256_blendv_epi8(
+    old.base_idx[0],
+    _mm256_set1_epi64x(base_idx),
+    cmp256
+    );
+  return res;
+}
+struct BMAS_ipair_uint64_t static inline BMAS_vector_u64hindex(
+  const struct BMAS_ipair_ivec x, const char max_or_min){
+  uint64_t m;
+  switch(max_or_min){
+  case 'a': m = 0;           break;
+  case 'i': m = 0xffffffff0; break;
+  }
+  long idx = -1;
+  for(int i=0; i<SIMD_DOUBLE_STRIDE; i++){
+    if ((max_or_min == 'a' && x.value[i] > m)
+        || (max_or_min == 'i' && x.value[i] < m)){
+      m = x.value[i];
+      switch(i){
+      case 0: idx = _mm256_extract_epi64(x.base_idx[0], 0); break;
+      case 1: idx = _mm256_extract_epi64(x.base_idx[0], 1); break;
+      case 2: idx = _mm256_extract_epi64(x.base_idx[0], 2); break;
+      case 3: idx = _mm256_extract_epi64(x.base_idx[0], 3); break;
+      }
+      idx += i;
+    }
+  }
+  struct BMAS_ipair_uint64_t res = {idx, m};
+  return res;
+}
+struct BMAS_ipair_ivec static inline BMAS_vector_u32index(
+  const struct BMAS_ipair_ivec old, BMAS_ivec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_ivec res;
+  switch(max_or_min){
+  case 'a': res.value = BMAS_vector_u32max(old.value, new); break;
+  case 'i': res.value = BMAS_vector_u32min(old.value, new); break;
+  }
+  __m256i cmp256 = _mm256_cmpeq_epi32(res.value, new);
+  int mask = _mm256_movemask_epi8(cmp256);
+  if (mask == 0){
+    res.base_idx[0] = old.base_idx[0];
+    res.base_idx[1] = old.base_idx[1];
+  }else{
+    cmp256 = _mm256_permute4x64_epi64(cmp256, 0b11011000);
+    __m256i cmp256low  = _mm256_unpacklo_epi32(cmp256, cmp256);
+    __m256i cmp256high = _mm256_unpackhi_epi32(cmp256, cmp256);
+    res.base_idx[0] = _mm256_blendv_epi8(
+      old.base_idx[0],
+      _mm256_set1_epi64x(base_idx),
+      cmp256low
+      );
+    res.base_idx[1] = _mm256_blendv_epi8(
+      old.base_idx[1],
+      _mm256_set1_epi64x(base_idx),
+      cmp256high
+      );
+  }
+  return res;
+}
+struct BMAS_ipair_uint32_t static inline BMAS_vector_u32hindex(
+  const struct BMAS_ipair_ivec x, const char max_or_min){
+  uint32_t m;
+  switch(max_or_min){
+  case 'a': m = 0;      break;
+  case 'i': m = 0xffff; break;
+  }
+  long idx = -1;
+
+  uint32_t v;
+#define V_EXTRACT32_MAX_AND_SETM(I)                                     \
+  v = _mm256_extract_epi32(x.value, I);                                 \
+  if (v>m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+#define V_EXTRACT32_MIN_AND_SETM(I)                                     \
+  v = _mm256_extract_epi32(x.value, I);                                 \
+  if (v<m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+
+  if (max_or_min == 'a'){
+    MACRO_LOOP(8, V_EXTRACT32_MAX_AND_SETM);
+  }else if (max_or_min == 'i'){
+    MACRO_LOOP(8, V_EXTRACT32_MIN_AND_SETM);
+  }
+
+#undef V_EXTRACT32_MIN_AND_SETM
+#undef V_EXTRACT32_MAX_AND_SETM
+  struct BMAS_ipair_uint32_t res = {idx, m};
+  return res;
+}
+
+struct BMAS_ipair_ivec static inline BMAS_vector_u16index(
+  const struct BMAS_ipair_ivec old, BMAS_ivec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_ivec res;
+  switch(max_or_min){
+  case 'a': res.value = BMAS_vector_u16max(old.value, new); break;
+  case 'i': res.value = BMAS_vector_u16min(old.value, new); break;
+  }
+  __m256i cmp256 = _mm256_cmpeq_epi16(res.value, new);
+  cmp256 = _mm256_permute4x64_epi64(cmp256, 0b11011000);
+  __m256i cmp256_0  = _mm256_unpacklo_epi16(cmp256, cmp256);
+  __m256i cmp256_1 = _mm256_unpackhi_epi16(cmp256, cmp256);
+
+  cmp256_0 = _mm256_permute4x64_epi64(cmp256_0, 0b11011000);
+  __m256i cmp256_00 = _mm256_unpacklo_epi32(cmp256_0, cmp256_0);
+  __m256i cmp256_01 = _mm256_unpackhi_epi32(cmp256_0, cmp256_0);
+
+  cmp256_1 = _mm256_permute4x64_epi64(cmp256_1, 0b11011000);
+  __m256i cmp256_10 = _mm256_unpacklo_epi32(cmp256_1, cmp256_1);
+  __m256i cmp256_11 = _mm256_unpackhi_epi32(cmp256_1, cmp256_1);
+
+  res.base_idx[0] = _mm256_blendv_epi8(
+    old.base_idx[0],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_00
+    );
+  res.base_idx[1] = _mm256_blendv_epi8(
+    old.base_idx[1],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_01
+    );
+  res.base_idx[2] = _mm256_blendv_epi8(
+    old.base_idx[2],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_10
+    );
+  res.base_idx[3] = _mm256_blendv_epi8(
+    old.base_idx[3],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_11
+    );
+
+  return res;
+}
+struct BMAS_ipair_uint16_t static inline BMAS_vector_u16hindex(
+  const struct BMAS_ipair_ivec x, const char max_or_min){
+  uint16_t m;
+  switch(max_or_min){
+  case 'a': m = 0;    break;
+  case 'i': m = 0xff; break;
+  }
+  long idx = -1;
+
+  uint16_t v;
+#define V_EXTRACT16_MAX_AND_SETM(I)                                     \
+  v = _mm256_extract_epi16(x.value, I);                                 \
+  if (v>m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+#define V_EXTRACT16_MIN_AND_SETM(I)                                     \
+  v = _mm256_extract_epi16(x.value, I);                                 \
+  if (v<m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+
+  if (max_or_min == 'a'){
+    MACRO_LOOP(16, V_EXTRACT16_MAX_AND_SETM);
+  }else if (max_or_min == 'i'){
+    MACRO_LOOP(16, V_EXTRACT16_MIN_AND_SETM);
+  }
+
+#undef V_EXTRACT16_MIN_AND_SETM
+#undef V_EXTRACT16_MAX_AND_SETM
+  struct BMAS_ipair_uint16_t res = {idx, m};
+  return res;
+}
+
+struct BMAS_ipair_ivec static inline BMAS_vector_u8index(
+  const struct BMAS_ipair_ivec old, BMAS_ivec new,
+  const long base_idx, const char max_or_min){
+  struct BMAS_ipair_ivec res;
+  switch(max_or_min){
+  case 'a': res.value = BMAS_vector_u8max(old.value, new); break;
+  case 'i': res.value = BMAS_vector_u8min(old.value, new); break;
+  }
+
+  // expand 8 cmp bits to 16 bits
+  __m256i cmp256 = _mm256_cmpeq_epi8(res.value, new);
+  cmp256 = _mm256_permute4x64_epi64(cmp256, 0b11011000);
+  __m256i cmp256_0 = _mm256_unpacklo_epi8(cmp256, cmp256);
+  __m256i cmp256_1 = _mm256_unpackhi_epi8(cmp256, cmp256);
+
+  // expand 16 cmp bits to 32 bits
+  cmp256_0 = _mm256_permute4x64_epi64(cmp256_0, 0b11011000);
+  __m256i cmp256_00 = _mm256_unpacklo_epi16(cmp256_0, cmp256_0);
+  __m256i cmp256_01 = _mm256_unpackhi_epi16(cmp256_0, cmp256_0);
+
+  cmp256_1 = _mm256_permute4x64_epi64(cmp256_1, 0b11011000);
+  __m256i cmp256_10 = _mm256_unpacklo_epi16(cmp256_1, cmp256_1);
+  __m256i cmp256_11 = _mm256_unpackhi_epi16(cmp256_1, cmp256_1);
+
+  // expand 32 cmp bits to 64 bits
+  cmp256_00 = _mm256_permute4x64_epi64(cmp256_00, 0b11011000);
+  __m256i cmp256_000 = _mm256_unpacklo_epi32(cmp256_00, cmp256_00);
+  __m256i cmp256_001 = _mm256_unpackhi_epi32(cmp256_00, cmp256_00);
+
+  cmp256_01 = _mm256_permute4x64_epi64(cmp256_01, 0b11011000);
+  __m256i cmp256_010 = _mm256_unpacklo_epi32(cmp256_01, cmp256_01);
+  __m256i cmp256_011 = _mm256_unpackhi_epi32(cmp256_01, cmp256_01);
+
+  cmp256_10 = _mm256_permute4x64_epi64(cmp256_10, 0b11011000);
+  __m256i cmp256_100 = _mm256_unpacklo_epi32(cmp256_10, cmp256_10);
+  __m256i cmp256_101 = _mm256_unpackhi_epi32(cmp256_10, cmp256_10);
+
+  cmp256_11 = _mm256_permute4x64_epi64(cmp256_11, 0b11011000);
+  __m256i cmp256_110 = _mm256_unpacklo_epi32(cmp256_11, cmp256_11);
+  __m256i cmp256_111 = _mm256_unpackhi_epi32(cmp256_11, cmp256_11);
+
+  res.base_idx[0] = _mm256_blendv_epi8(
+    old.base_idx[0],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_000
+    );
+  res.base_idx[1] = _mm256_blendv_epi8(
+    old.base_idx[1],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_001
+    );
+  res.base_idx[2] = _mm256_blendv_epi8(
+    old.base_idx[2],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_010
+    );
+  res.base_idx[3] = _mm256_blendv_epi8(
+    old.base_idx[3],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_011
+    );
+  res.base_idx[4] = _mm256_blendv_epi8(
+    old.base_idx[4],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_100
+    );
+  res.base_idx[5] = _mm256_blendv_epi8(
+    old.base_idx[5],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_101
+    );
+  res.base_idx[6] = _mm256_blendv_epi8(
+    old.base_idx[6],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_110
+    );
+  res.base_idx[7] = _mm256_blendv_epi8(
+    old.base_idx[7],
+    _mm256_set1_epi64x(base_idx),
+    cmp256_111
+    );
+  return res;
+}
+struct BMAS_ipair_uint8_t static inline BMAS_vector_u8hindex(
+  const struct BMAS_ipair_ivec x, const char max_or_min){
+  uint8_t m;
+  switch(max_or_min){
+  case 'a': m = 0;   break;
+  case 'i': m = 0xf; break;
+  }
+  long idx = -1;
+
+  uint8_t v;
+#define V_EXTRACT8_MAX_AND_SETM(I)                                     \
+  v = _mm256_extract_epi8(x.value, I);                                 \
+  if (v>m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+#define V_EXTRACT8_MIN_AND_SETM(I)                                     \
+  v = _mm256_extract_epi8(x.value, I);                                 \
+  if (v<m) {m=v; idx=I + _mm256_extract_epi64(x.base_idx[I/4], I%4);}
+
+  if (max_or_min == 'a'){
+    MACRO_LOOP(32, V_EXTRACT8_MAX_AND_SETM);
+  }else if (max_or_min == 'i'){
+    MACRO_LOOP(32, V_EXTRACT8_MIN_AND_SETM);
+  }
+
+#undef V_EXTRACT8_MIN_AND_SETM
+#undef V_EXTRACT8_MAX_AND_SETM
+  struct BMAS_ipair_uint8_t res = {idx, m};
+  return res;
+}
 
 
 // trigonometric
