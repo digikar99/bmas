@@ -71,11 +71,56 @@ uint16_t static inline BMAS_scalar_u16min(uint16_t a, uint16_t b){return (a<b)?a
 uint8_t  static inline BMAS_scalar_u8min (uint8_t a,  uint8_t b){return (a<b)?a:b;}
 
 
+
 int8_t static inline BMAS_scalar_i8and(int8_t a, int8_t b){return a & b;}
 int8_t static inline BMAS_scalar_i8or (int8_t a, int8_t b){return a | b;}
 int8_t static inline BMAS_scalar_i8not(int8_t a){return ~a;}
 int8_t static inline BMAS_scalar_i8xor(int8_t a, int8_t b){return a ^ b;}
 int8_t static inline BMAS_scalar_i8andnot(int8_t a, int8_t b){return a & ~b;}
+
+int16_t static inline BMAS_scalar_i16and(int16_t a, int16_t b){return a & b;}
+int16_t static inline BMAS_scalar_i16or (int16_t a, int16_t b){return a | b;}
+int16_t static inline BMAS_scalar_i16not(int16_t a){return ~a;}
+int16_t static inline BMAS_scalar_i16xor(int16_t a, int16_t b){return a ^ b;}
+int16_t static inline BMAS_scalar_i16andnot(int16_t a, int16_t b){return a & ~b;}
+
+int32_t static inline BMAS_scalar_i32and(int32_t a, int32_t b){return a & b;}
+int32_t static inline BMAS_scalar_i32or (int32_t a, int32_t b){return a | b;}
+int32_t static inline BMAS_scalar_i32not(int32_t a){return ~a;}
+int32_t static inline BMAS_scalar_i32xor(int32_t a, int32_t b){return a ^ b;}
+int32_t static inline BMAS_scalar_i32andnot(int32_t a, int32_t b){return a & ~b;}
+
+int64_t static inline BMAS_scalar_i64and(int64_t a, int64_t b){return a & b;}
+int64_t static inline BMAS_scalar_i64or (int64_t a, int64_t b){return a | b;}
+int64_t static inline BMAS_scalar_i64not(int64_t a){return ~a;}
+int64_t static inline BMAS_scalar_i64xor(int64_t a, int64_t b){return a ^ b;}
+int64_t static inline BMAS_scalar_i64andnot(int64_t a, int64_t b){return a & ~b;}
+
+
+uint8_t static inline BMAS_scalar_u8and(uint8_t a, uint8_t b){return a & b;}
+uint8_t static inline BMAS_scalar_u8or (uint8_t a, uint8_t b){return a | b;}
+uint8_t static inline BMAS_scalar_u8not(uint8_t a){return ~a;}
+uint8_t static inline BMAS_scalar_u8xor(uint8_t a, uint8_t b){return a ^ b;}
+uint8_t static inline BMAS_scalar_u8andnot(uint8_t a, uint8_t b){return a & ~b;}
+
+uint16_t static inline BMAS_scalar_u16and(uint16_t a, uint16_t b){return a & b;}
+uint16_t static inline BMAS_scalar_u16or (uint16_t a, uint16_t b){return a | b;}
+uint16_t static inline BMAS_scalar_u16not(uint16_t a){return ~a;}
+uint16_t static inline BMAS_scalar_u16xor(uint16_t a, uint16_t b){return a ^ b;}
+uint16_t static inline BMAS_scalar_u16andnot(uint16_t a, uint16_t b){return a & ~b;}
+
+uint32_t static inline BMAS_scalar_u32and(uint32_t a, uint32_t b){return a & b;}
+uint32_t static inline BMAS_scalar_u32or (uint32_t a, uint32_t b){return a | b;}
+uint32_t static inline BMAS_scalar_u32not(uint32_t a){return ~a;}
+uint32_t static inline BMAS_scalar_u32xor(uint32_t a, uint32_t b){return a ^ b;}
+uint32_t static inline BMAS_scalar_u32andnot(uint32_t a, uint32_t b){return a & ~b;}
+
+uint64_t static inline BMAS_scalar_u64and(uint64_t a, uint64_t b){return a & b;}
+uint64_t static inline BMAS_scalar_u64or (uint64_t a, uint64_t b){return a | b;}
+uint64_t static inline BMAS_scalar_u64not(uint64_t a){return ~a;}
+uint64_t static inline BMAS_scalar_u64xor(uint64_t a, uint64_t b){return a ^ b;}
+uint64_t static inline BMAS_scalar_u64andnot(uint64_t a, uint64_t b){return a & ~b;}
+
 
 // gcc uses arithmetic shift on signed values and logical shift on unsigned values
 int64_t static inline BMAS_scalar_i64sra(int64_t a, int64_t count){return a >> count;}

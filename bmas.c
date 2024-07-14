@@ -402,11 +402,61 @@ two_arg_fn_body(u8max,  SIMD_SINGLE_STRIDE*4, int8_t,  BMAS_ivec, int8_t,  BMAS_
 
 
 // Logical Operators
-one_arg_fn_body(i8not,    SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
-two_arg_fn_body(i8and,    SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
-two_arg_fn_body(i8or,     SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
-two_arg_fn_body(i8xor,    SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
-two_arg_fn_body(i8andnot, SIMD_SINGLE_STRIDE*4, int8_t, BMAS_ivec, int8_t, BMAS_ivec);
+one_arg_fn_body(i64not, SIMD_DOUBLE_STRIDE,   int64_t, BMAS_ivec, int64_t, BMAS_ivec);
+one_arg_fn_body(i32not, SIMD_SINGLE_STRIDE,   int32_t, BMAS_ivec, int32_t, BMAS_ivec);
+one_arg_fn_body(i16not, SIMD_SINGLE_STRIDE*2, int16_t, BMAS_ivec, int16_t, BMAS_ivec);
+one_arg_fn_body(i8not,  SIMD_SINGLE_STRIDE*4, int8_t,  BMAS_ivec, int8_t,  BMAS_ivec);
+
+one_arg_fn_body(u64not, SIMD_DOUBLE_STRIDE,   uint64_t, BMAS_ivec, uint64_t, BMAS_ivec);
+one_arg_fn_body(u32not, SIMD_SINGLE_STRIDE,   uint32_t, BMAS_ivec, uint32_t, BMAS_ivec);
+one_arg_fn_body(u16not, SIMD_SINGLE_STRIDE*2, uint16_t, BMAS_ivec, uint16_t, BMAS_ivec);
+one_arg_fn_body(u8not,  SIMD_SINGLE_STRIDE*4, uint8_t,  BMAS_ivec, uint8_t,  BMAS_ivec);
+
+
+two_arg_fn_body(i64and, SIMD_DOUBLE_STRIDE,   int64_t, BMAS_ivec, int64_t, BMAS_ivec);
+two_arg_fn_body(i32and, SIMD_SINGLE_STRIDE,   int32_t, BMAS_ivec, int32_t, BMAS_ivec);
+two_arg_fn_body(i16and, SIMD_SINGLE_STRIDE*2, int16_t, BMAS_ivec, int16_t, BMAS_ivec);
+two_arg_fn_body(i8and,  SIMD_SINGLE_STRIDE*4, int8_t,  BMAS_ivec, int8_t,  BMAS_ivec);
+
+two_arg_fn_body(u64and, SIMD_DOUBLE_STRIDE,   uint64_t, BMAS_ivec, uint64_t, BMAS_ivec);
+two_arg_fn_body(u32and, SIMD_SINGLE_STRIDE,   uint32_t, BMAS_ivec, uint32_t, BMAS_ivec);
+two_arg_fn_body(u16and, SIMD_SINGLE_STRIDE*2, uint16_t, BMAS_ivec, uint16_t, BMAS_ivec);
+two_arg_fn_body(u8and,  SIMD_SINGLE_STRIDE*4, uint8_t,  BMAS_ivec, uint8_t,  BMAS_ivec);
+
+
+two_arg_fn_body(i64or, SIMD_DOUBLE_STRIDE,   int64_t, BMAS_ivec, int64_t, BMAS_ivec);
+two_arg_fn_body(i32or, SIMD_SINGLE_STRIDE,   int32_t, BMAS_ivec, int32_t, BMAS_ivec);
+two_arg_fn_body(i16or, SIMD_SINGLE_STRIDE*2, int16_t, BMAS_ivec, int16_t, BMAS_ivec);
+two_arg_fn_body(i8or,  SIMD_SINGLE_STRIDE*4, int8_t,  BMAS_ivec, int8_t,  BMAS_ivec);
+
+two_arg_fn_body(u64or, SIMD_DOUBLE_STRIDE,   uint64_t, BMAS_ivec, uint64_t, BMAS_ivec);
+two_arg_fn_body(u32or, SIMD_SINGLE_STRIDE,   uint32_t, BMAS_ivec, uint32_t, BMAS_ivec);
+two_arg_fn_body(u16or, SIMD_SINGLE_STRIDE*2, uint16_t, BMAS_ivec, uint16_t, BMAS_ivec);
+two_arg_fn_body(u8or,  SIMD_SINGLE_STRIDE*4, uint8_t,  BMAS_ivec, uint8_t,  BMAS_ivec);
+
+
+two_arg_fn_body(i64xor, SIMD_DOUBLE_STRIDE,   int64_t, BMAS_ivec, int64_t, BMAS_ivec);
+two_arg_fn_body(i32xor, SIMD_SINGLE_STRIDE,   int32_t, BMAS_ivec, int32_t, BMAS_ivec);
+two_arg_fn_body(i16xor, SIMD_SINGLE_STRIDE*2, int16_t, BMAS_ivec, int16_t, BMAS_ivec);
+two_arg_fn_body(i8xor,  SIMD_SINGLE_STRIDE*4, int8_t,  BMAS_ivec, int8_t,  BMAS_ivec);
+
+two_arg_fn_body(u64xor, SIMD_DOUBLE_STRIDE,   uint64_t, BMAS_ivec, uint64_t, BMAS_ivec);
+two_arg_fn_body(u32xor, SIMD_SINGLE_STRIDE,   uint32_t, BMAS_ivec, uint32_t, BMAS_ivec);
+two_arg_fn_body(u16xor, SIMD_SINGLE_STRIDE*2, uint16_t, BMAS_ivec, uint16_t, BMAS_ivec);
+two_arg_fn_body(u8xor,  SIMD_SINGLE_STRIDE*4, uint8_t,  BMAS_ivec, uint8_t,  BMAS_ivec);
+
+
+two_arg_fn_body(i64andnot, SIMD_DOUBLE_STRIDE,   int64_t, BMAS_ivec, int64_t, BMAS_ivec);
+two_arg_fn_body(i32andnot, SIMD_SINGLE_STRIDE,   int32_t, BMAS_ivec, int32_t, BMAS_ivec);
+two_arg_fn_body(i16andnot, SIMD_SINGLE_STRIDE*2, int16_t, BMAS_ivec, int16_t, BMAS_ivec);
+two_arg_fn_body(i8andnot,  SIMD_SINGLE_STRIDE*4, int8_t,  BMAS_ivec, int8_t,  BMAS_ivec);
+
+two_arg_fn_body(u64andnot, SIMD_DOUBLE_STRIDE,   uint64_t, BMAS_ivec, uint64_t, BMAS_ivec);
+two_arg_fn_body(u32andnot, SIMD_SINGLE_STRIDE,   uint32_t, BMAS_ivec, uint32_t, BMAS_ivec);
+two_arg_fn_body(u16andnot, SIMD_SINGLE_STRIDE*2, uint16_t, BMAS_ivec, uint16_t, BMAS_ivec);
+two_arg_fn_body(u8andnot,  SIMD_SINGLE_STRIDE*4, uint8_t,  BMAS_ivec, uint8_t,  BMAS_ivec);
+
+
 
 // Bitshift Operators
 

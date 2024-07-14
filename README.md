@@ -80,11 +80,11 @@ SSE and AVX512 support exists to a limited extent due to limited developer time.
 | gt                                 | +       | +       | +     | +     | +     | +    | +      | +      | +      | +     |
 | ge                                 | +       | +       | +     | +     | +     | +    | +      | +      | +      | +     |
 | **Function \ Data type (Bitwise)** | float32 | float64 | int64 | int32 | int16 | int8 | uint64 | uint32 | uint16 | uint8 |
-| not                                | -       | -       | -     | -     | -     | +    | -      | -      | -      | -     |
-| and                                | -       | -       | -     | -     | -     | +    | -      | -      | -      | -     |
-| or                                 | -       | -       | -     | -     | -     | +    | -      | -      | -      | -     |
-| nor                                | -       | -       | -     | -     | -     | +    | -      | -      | -      | -     |
-| andnot                             | -       | -       | -     | -     | -     | +    | -      | -      | -      | -     |
+| not                                | -       | -       | +     | +     | +     | +    | +      | +      | +      | +     |
+| and                                | -       | -       | +     | +     | +     | +    | +      | +      | +      | +     |
+| or                                 | -       | -       | +     | +     | +     | +    | +      | +      | +      | +     |
+| xor                                | -       | -       | +     | +     | +     | +    | +      | +      | +      | +     |
+| andnot                             | -       | -       | +     | +     | +     | +    | +      | +      | +      | +     |
 | sll                                | -       | -       | -     | -     | -     | -    | +      | +      | +      | +     |
 | srl                                | -       | -       | -     | -     | -     | -    | +      | +      | +      | +     |
 | sra                                | -       | -       | +     | +     | +     | +    | -      | -      | -      | -     |

@@ -8,7 +8,6 @@
                     double* x, const long incx,     \
                     long* out, const long inc_out);
 
-
 #define two_arg_fn(name, itype, otype)              \
   void BMAS_##name(const long n,                    \
                    itype* x, const long incx,       \
@@ -289,12 +288,60 @@ two_arg_fn(u16sll, uint16_t, uint16_t);
 two_arg_fn(u8sll,  uint8_t,  uint8_t);
 
 
+one_arg_fn(i64not, int64_t, int64_t);
+one_arg_fn(i32not, int32_t, int32_t);
+one_arg_fn(i16not, int16_t, int16_t);
+one_arg_fn(i8not,  int8_t,  int8_t);
 
-void BMAS_i8not(const long N, int8_t* x, const long inc_x, int8_t* out, const long inc_out);
-two_arg_fn(i8and, int8_t, int8_t);
-two_arg_fn(i8or,  int8_t, int8_t);
-two_arg_fn(i8xor, int8_t, int8_t);
-two_arg_fn(i8andnot, int8_t, int8_t);
+one_arg_fn(u64not, uint64_t, uint64_t);
+one_arg_fn(u32not, uint32_t, uint32_t);
+one_arg_fn(u16not, uint16_t, uint16_t);
+one_arg_fn(u8not,  uint8_t,  uint8_t);
+
+
+two_arg_fn(i64and, int64_t, int64_t);
+two_arg_fn(i32and, int32_t, int32_t);
+two_arg_fn(i16and, int16_t, int16_t);
+two_arg_fn(i8and,  int8_t,  int8_t);
+
+two_arg_fn(u64and, uint64_t, uint64_t);
+two_arg_fn(u32and, uint32_t, uint32_t);
+two_arg_fn(u16and, uint16_t, uint16_t);
+two_arg_fn(u8and,  uint8_t,  uint8_t);
+
+
+two_arg_fn(i64or, int64_t, int64_t);
+two_arg_fn(i32or, int32_t, int32_t);
+two_arg_fn(i16or, int16_t, int16_t);
+two_arg_fn(i8or,  int8_t,  int8_t);
+
+two_arg_fn(u64or, uint64_t, uint64_t);
+two_arg_fn(u32or, uint32_t, uint32_t);
+two_arg_fn(u16or, uint16_t, uint16_t);
+two_arg_fn(u8or,  uint8_t,  uint8_t);
+
+
+two_arg_fn(i64xor, int64_t, int64_t);
+two_arg_fn(i32xor, int32_t, int32_t);
+two_arg_fn(i16xor, int16_t, int16_t);
+two_arg_fn(i8xor,  int8_t,  int8_t);
+
+two_arg_fn(u64xor, uint64_t, uint64_t);
+two_arg_fn(u32xor, uint32_t, uint32_t);
+two_arg_fn(u16xor, uint16_t, uint16_t);
+two_arg_fn(u8xor,  uint8_t,  uint8_t);
+
+
+two_arg_fn(i64andnot, int64_t, int64_t);
+two_arg_fn(i32andnot, int32_t, int32_t);
+two_arg_fn(i16andnot, int16_t, int16_t);
+two_arg_fn(i8andnot,  int8_t,  int8_t);
+
+two_arg_fn(u64andnot, uint64_t, uint64_t);
+two_arg_fn(u32andnot, uint32_t, uint32_t);
+two_arg_fn(u16andnot, uint16_t, uint16_t);
+two_arg_fn(u8andnot,  uint8_t,  uint8_t);
+
 
 one_arg_fn(cbrt);
 

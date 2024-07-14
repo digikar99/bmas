@@ -479,6 +479,64 @@ BMAS_ivec static inline BMAS_vector_i8not(BMAS_ivec a){
 }
 BMAS_ivec static inline BMAS_vector_i8andnot(BMAS_ivec a, BMAS_ivec b){return _mm256_andnot_si256(a, b);}
 
+BMAS_ivec static inline BMAS_vector_i16and(BMAS_ivec a, BMAS_ivec b){return _mm256_and_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i16or (BMAS_ivec a, BMAS_ivec b){return _mm256_or_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i16xor(BMAS_ivec a, BMAS_ivec b){return _mm256_xor_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i16not(BMAS_ivec a){
+  return _mm256_xor_si256(a, _mm256_cmpeq_epi16(a, a));
+}
+BMAS_ivec static inline BMAS_vector_i16andnot(BMAS_ivec a, BMAS_ivec b){return _mm256_andnot_si256(a, b);}
+
+BMAS_ivec static inline BMAS_vector_i32and(BMAS_ivec a, BMAS_ivec b){return _mm256_and_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i32or (BMAS_ivec a, BMAS_ivec b){return _mm256_or_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i32xor(BMAS_ivec a, BMAS_ivec b){return _mm256_xor_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i32not(BMAS_ivec a){
+  return _mm256_xor_si256(a, _mm256_cmpeq_epi32(a, a));
+}
+BMAS_ivec static inline BMAS_vector_i32andnot(BMAS_ivec a, BMAS_ivec b){return _mm256_andnot_si256(a, b);}
+
+BMAS_ivec static inline BMAS_vector_i64and(BMAS_ivec a, BMAS_ivec b){return _mm256_and_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i64or (BMAS_ivec a, BMAS_ivec b){return _mm256_or_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i64xor(BMAS_ivec a, BMAS_ivec b){return _mm256_xor_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_i64not(BMAS_ivec a){
+  return _mm256_xor_si256(a, _mm256_cmpeq_epi64(a, a));
+}
+BMAS_ivec static inline BMAS_vector_i64andnot(BMAS_ivec a, BMAS_ivec b){return _mm256_andnot_si256(a, b);}
+
+
+BMAS_ivec static inline BMAS_vector_u8and(BMAS_ivec a, BMAS_ivec b){return _mm256_and_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u8or (BMAS_ivec a, BMAS_ivec b){return _mm256_or_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u8xor(BMAS_ivec a, BMAS_ivec b){return _mm256_xor_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u8not(BMAS_ivec a){
+  // intel's page lists epi8 as having a minimal latency-throughtput
+  return _mm256_xor_si256(a, _mm256_cmpeq_epi8(a, a));
+}
+BMAS_ivec static inline BMAS_vector_u8andnot(BMAS_ivec a, BMAS_ivec b){return _mm256_andnot_si256(a, b);}
+
+BMAS_ivec static inline BMAS_vector_u16and(BMAS_ivec a, BMAS_ivec b){return _mm256_and_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u16or (BMAS_ivec a, BMAS_ivec b){return _mm256_or_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u16xor(BMAS_ivec a, BMAS_ivec b){return _mm256_xor_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u16not(BMAS_ivec a){
+  return _mm256_xor_si256(a, _mm256_cmpeq_epi16(a, a));
+}
+BMAS_ivec static inline BMAS_vector_u16andnot(BMAS_ivec a, BMAS_ivec b){return _mm256_andnot_si256(a, b);}
+
+BMAS_ivec static inline BMAS_vector_u32and(BMAS_ivec a, BMAS_ivec b){return _mm256_and_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u32or (BMAS_ivec a, BMAS_ivec b){return _mm256_or_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u32xor(BMAS_ivec a, BMAS_ivec b){return _mm256_xor_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u32not(BMAS_ivec a){
+  return _mm256_xor_si256(a, _mm256_cmpeq_epi32(a, a));
+}
+BMAS_ivec static inline BMAS_vector_u32andnot(BMAS_ivec a, BMAS_ivec b){return _mm256_andnot_si256(a, b);}
+
+BMAS_ivec static inline BMAS_vector_u64and(BMAS_ivec a, BMAS_ivec b){return _mm256_and_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u64or (BMAS_ivec a, BMAS_ivec b){return _mm256_or_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u64xor(BMAS_ivec a, BMAS_ivec b){return _mm256_xor_si256(a, b);}
+BMAS_ivec static inline BMAS_vector_u64not(BMAS_ivec a){
+  return _mm256_xor_si256(a, _mm256_cmpeq_epi64(a, a));
+}
+BMAS_ivec static inline BMAS_vector_u64andnot(BMAS_ivec a, BMAS_ivec b){return _mm256_andnot_si256(a, b);}
+
 
 // integer comparison
 
